@@ -20,11 +20,7 @@ namespace UnityStandardAssets.ImageEffects
 
         override protected void Start()
         {
-            if (!SystemInfo.supportsRenderTextures)
-            {
-                enabled = false;
-                return;
-            }
+            
             base.Start();
         }
 

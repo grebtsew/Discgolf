@@ -34,6 +34,7 @@ public class canvas_controller : MonoBehaviour
     /// 
     public void resetSliders()
     {
+      
       x_rot.value = 0;
       y_rot.value = 0;
       z_rot.value = 0;
@@ -51,11 +52,13 @@ public class canvas_controller : MonoBehaviour
     }
     public void updateRotation()
     {
+        if (frisbee.throw_mode) { 
         frisbee.rigidBody.MoveRotation(Quaternion.Euler(x_rot.value, y_rot.value + 90, z_rot.value));
+        }
     }
     public void updateposition()
     {
-        if (!frisbee.at_tee) { 
+        if (frisbee.at_tee) { 
         frisbee.rigidBody.position = new Vector3(startpos.x + x_pos.value, startpos.y + y_pos.value, startpos.z + z_pos.value);
         }
     }
