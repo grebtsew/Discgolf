@@ -14,6 +14,7 @@ public class Disc_Movement : MonoBehaviour
     public Rigidbody rigidBody;
     private Disc Disc; // The Frisbee
     private basket_script basket; // an obligatory basket
+    private disc_mode mode = disc_mode.GROUNDED;
 
     public Vector3 discNextPosition; // Next throw position
     public Vector3 current_throw_pos; // current throw pos
@@ -48,7 +49,7 @@ public class Disc_Movement : MonoBehaviour
     private bool isGrounded = false; // Is the disc on the ground
     private bool isRotate = false; // If the disc in the air it rotates
     private bool hitStuff = false; // extra collision check
-    public bool throw_mode = false; // is throw mode
+    public bool throw_mode = true; // is throw mode
     public bool backhand = true; // fore or backhand
 
     private Vector3 sideDir; // fade direction
@@ -297,6 +298,110 @@ public class Disc_Movement : MonoBehaviour
         at_tee = false;
     }
 
+    /// Rotation Methods
+    /// 
+    /// 
+    private void Rotate()
+    {
+        // while rotating
+        if (rotateSpeed * playerThrust + delta_rot_drag > 0)
+        {
+
+            // reduce rotation
+            delta_rot_drag -= (100 / (rotateSpeed * playerThrust)) * 30; // 30 % rot loss
+
+            rot = (rotateSpeed * playerThrust + delta_rot_drag) * Time.deltaTime;
+
+            // rotation direction
+            if (backhand)
+            {
+
+                transform.Rotate(Vector3.up, rot);
+            }
+            else
+            {
+                transform.Rotate(Vector3.up, -rot);
+            }
+
+
+            // handle stabelization and fade
+            if (rot > fade_rot_speed)
+            {
+                
+                stabelize();
+            }
+            else
+            {
+                mode = disc_mode.FADE;
+                fade();
+            }
+
+        }
+        else
+        {
+            rotstopped();
+        }
+    }
+    private void rotstopped()
+    {
+
+        // Stop rotation of the disc
+        if (backhand)
+        {
+            transform.Rotate(Vector3.up, 3);
+        }
+        else
+        {
+            transform.Rotate(Vector3.up, -3);
+        }
+        hitStuff = true;
+        Physics.gravity = new Vector3(0.0f, -9.81f, 0.0f);  // Reset Gravity. Nicer look when disc hits things and fall down
+
+    }
+    private void stabelize()
+    {
+        // stabelise disc
+        if (sideDir.y < 0.8f && sideDir.y > -0.8f)
+        {
+            
+            if(rigidBody.rotation.x != 0 && rigidBody.rotation.y != 0)
+            {
+                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.Euler(0, transform.localEulerAngles.y, 0), stable_speed * Time.deltaTime));
+                mode = disc_mode.STABELIZE;
+            } else
+            {
+                mode = disc_mode.BALANCE;
+            }
+
+            
+        }
+    }
+    private void fade()
+    {
+        // fade - solution for all directions!
+        if (backhand)
+        {
+            rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.Euler(90 * fade_x, transform.rotation.y, 90 * fade_z), fade_speed * Time.deltaTime));
+        }
+        else
+        {
+            rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.Euler(-90 * fade_x, transform.rotation.y, -90 * fade_z), fade_speed * Time.deltaTime));
+        }
+    }
+
+    /// Collision
+    /// 
+    /// 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.name.Contains("Terrain"))
+        {
+            isGrounded = true;
+            mode = disc_mode.GROUNDED;
+        }
+    }
+
+
     /// Reseting throw and game
     /// 
     /// 
@@ -389,97 +494,6 @@ public class Disc_Movement : MonoBehaviour
         cam.updatePosition();
         cam.mode = camera_mode.throw_mode;
 
-    }
-
-    /// Rotation Methods
-    /// 
-    /// 
-    private void Rotate()
-    {
-        // while rotating
-        if (rotateSpeed * playerThrust + delta_rot_drag > 0)
-        {
-
-            // reduce rotation
-            delta_rot_drag -= (100 / (rotateSpeed * playerThrust)) * 30; // 30 % rot loss
-
-            rot = (rotateSpeed * playerThrust + delta_rot_drag) * Time.deltaTime;
-
-            // rotation direction
-            if (backhand)
-            {
-
-                transform.Rotate(Vector3.up, rot);
-            }
-            else
-            {
-                transform.Rotate(Vector3.up, -rot);
-            }
-
-
-            // handle stabelization and fade
-            if (rot > fade_rot_speed)
-            {
-                stabelize();
-            }
-            else
-            {
-
-                fade();
-            }
-
-        }
-        else
-        {
-            rotstopped();
-        }
-    }
-    private void rotstopped()
-    {
-
-        // Stop rotation of the disc
-        if (backhand)
-        {
-            transform.Rotate(Vector3.up, 3);
-        }
-        else
-        {
-            transform.Rotate(Vector3.up, -3);
-        }
-        hitStuff = true;
-        Physics.gravity = new Vector3(0.0f, -9.81f, 0.0f);  // Reset Gravity. Nicer look when disc hits things and fall down
-
-    }
-    private void stabelize()
-    {
-        // stabelise disc
-        if (sideDir.y < 0.8f && sideDir.y > -0.8f)
-        {
-            rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.Euler(0, transform.localEulerAngles.y, 0), stable_speed * Time.deltaTime));
-        } 
-    }
-    private void fade()
-    {
-        // fade - solution for all directions!
-        if (backhand)
-        {
-            rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.Euler(90 * fade_x, transform.rotation.y, 90 * fade_z), fade_speed * Time.deltaTime));
-        }
-        else
-        {
-            rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.Euler(-90 * fade_x, transform.rotation.y, -90 * fade_z), fade_speed * Time.deltaTime));
-        } 
-    }
-
-    /// Collision
-    /// 
-    /// 
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.name.Contains("Terrain"))
-        {
-            isGrounded = true;
-        }
     }
 
 }

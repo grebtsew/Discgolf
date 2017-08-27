@@ -52,9 +52,9 @@ public class canvas_controller : MonoBehaviour
     }
     public void updateRotation()
     {
-        if (frisbee.throw_mode) { 
+    
         frisbee.rigidBody.MoveRotation(Quaternion.Euler(x_rot.value, y_rot.value + 90, z_rot.value));
-        }
+ 
     }
     public void updateposition()
     {
