@@ -14,6 +14,7 @@ public class canvas_controller : MonoBehaviour
     public Slider z_pos;
     public Slider power;
     public Slider spin;
+    public Slider speed;
 
     private Disc_Movement frisbee;
     private Vector3 startpos;
@@ -26,7 +27,7 @@ public class canvas_controller : MonoBehaviour
         // set spinner start value
         spin.value = frisbee.rotateSpeed;
         power.value = frisbee.power;
-
+        speed.value = frisbee.throw_speed;
     }
 
     /// publicly used methods
@@ -45,6 +46,10 @@ public class canvas_controller : MonoBehaviour
     public void updateSpin()
     {
         frisbee.SetRotSpeed(spin.value);
+    }
+    public void updateSpeed()
+    {
+        frisbee.SetSpeed(speed.value);
     }
     public void updatePower()
     {

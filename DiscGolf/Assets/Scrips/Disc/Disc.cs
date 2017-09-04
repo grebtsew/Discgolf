@@ -12,7 +12,7 @@ public class Disc : MonoBehaviour {
     public static double CDA = 2.72;  //The drag coefficient dependent on alpha.
     public static double ALPHA0 = -4;
 
-    /* SPEED  1 - 14
+    /* SPEED  1 - 15
      * Speed is the rate at which a disc can travel through the air.
      * Speed 14 Distance Drivers are the fastest, having the PDGA maximum legal wing width.
      * Faster discs cut into the wind with less effort and are best when throwing up wind.
@@ -48,7 +48,7 @@ public class Disc : MonoBehaviour {
 
     void Start()
     {
-        SPEED = Clamp(SPEED, 1, 14);
+        SPEED = Clamp(SPEED, 1, 15);
         GLIDE = Clamp(GLIDE, 1, 7);
         TURN = Clamp(TURN, -5, 1); 
         FADE = Clamp(FADE, 0, 5); 
