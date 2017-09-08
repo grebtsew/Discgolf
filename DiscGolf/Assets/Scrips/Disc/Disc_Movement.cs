@@ -66,6 +66,12 @@ public class Disc_Movement : MonoBehaviour
     public float throw_speed = 100; // throw speed 0-150
     private float glide = 0;
 
+    private bool throw_animation = false;
+    private float throw_arm_length = 5;
+   
+    private float temp = 0;
+    private Vector3 throwpos;
+
     void Start()
     {
         cam = FindObjectOfType<follow_camera>();
@@ -158,6 +164,7 @@ public class Disc_Movement : MonoBehaviour
         throw_speed = f;
     }
 
+    
     /// Update related methods
     /// 
     /// 
@@ -179,6 +186,19 @@ public class Disc_Movement : MonoBehaviour
 
             if (rigidBody.velocity.magnitude > maxSpeed)
                 rigidBody.velocity = rigidBody.velocity.normalized * maxSpeed;
+        } else if (throw_animation)
+        {
+           
+            temp *= 1.05f;
+            transform.position += transform.forward *temp;
+
+
+            if (Vector3.Distance(transform.position, throwpos-transform.forward*throw_arm_length) >= Vector3.Distance( throwpos, throwpos - transform.forward * throw_arm_length))
+            {
+                setUpThrow();
+               
+                throw_animation = false;
+            }
         }
     }
     private void gravity_physics()
@@ -287,7 +307,7 @@ public class Disc_Movement : MonoBehaviour
         // Force up (160 - 170)
         else force.y = Random.Range(70, 90) + (playerThrust * 100);
     }
-    public void ThrowDisc()
+    private void setUpThrow()
     {
         // Added variables
         delta_rotation_speed = 0;
@@ -326,34 +346,46 @@ public class Disc_Movement : MonoBehaviour
         }
 
         fade_rot_speed = 15f + Disc.FADE;
-        plan_speed = Disc.FADE+ 5f;
+        plan_speed = Disc.FADE + 5f;
 
         if (throw_speed / 10 > Disc.SPEED)
         {
             fade_speed += (throw_speed / (Disc.SPEED * 10)) * 10f;
-              plan_speed += (throw_speed / (Disc.SPEED * 10)) * 8f;
-            turn_drag *= -(throw_speed / (Disc.SPEED * 10))*3;
+            plan_speed += (throw_speed / (Disc.SPEED * 10)) * 8f;
+            turn_drag *= -(throw_speed / (Disc.SPEED * 10)) * 3;
             fade_rot_speed += (throw_speed / (Disc.SPEED * 10)) * 100;
         }
 
         maxSpeed = (throw_speed / (Disc.SPEED * 10)) * Disc.SPEED + min_speed;   // set speed
 
+        rigidBody.isKinematic = false; // Add gravity to the disc
 
         force.z = power;                        // set up z-force
-        
-
-        rigidBody.isKinematic = false; // Add gravity to the disc
-       
 
         // Add force
         rigidBody.AddForce(transform.right * force.x); // Add force on X to the disc
         rigidBody.AddForce(transform.up * force.y); // Add force on Y to the disc
         rigidBody.AddForce(transform.forward * force.z); // Add force on Z to the disc
-
+       
         isThrown = true; // Disc is thrown by player
+        throw_mode = true;
         isRotate = true; // The disc will rotate
-        throw_mode = false;
         at_tee = false;
+
+    }
+
+    public void ThrowDisc()
+    {
+
+
+
+        temp =throw_arm_length / maxSpeed;
+        throwpos = transform.position;
+
+        transform.position -= transform.forward * throw_arm_length; 
+        
+        throw_animation = true;
+      
     }
 
     /// Rotation Methods
