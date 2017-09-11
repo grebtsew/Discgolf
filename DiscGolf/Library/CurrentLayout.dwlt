@@ -369,9 +369,9 @@ MonoBehaviour:
     height: 776
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: caf1ffff
-    m_LastClickedID: -3638
-    m_ExpandedIDs: 04f2ffff0cf2ffff2af2ffff90f2ffff94f2ffff96f2ffff18fcffff00000000
+    m_SelectedIDs: 9e2b0000
+    m_LastClickedID: 11166
+    m_ExpandedIDs: 0688feff6048ffffc6e6ffffcef0ffff64f1fffffaf1ffff5af2ffff5cf2ffffdefbffff00000000982e0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -421,14 +421,14 @@ MonoBehaviour:
     width: 1510
     height: 776
   m_SceneLighting: 0
-  lastFramingTime: 3578.0629863851204
-  m_2DMode: 1
+  lastFramingTime: 1533.5646676027745
+  m_2DMode: 0
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -11.758901, y: 105.41762, z: 15.625}
+    m_Target: {x: -79.674995, y: 4.693512, z: 40.299988}
     speed: 2
-    m_Value: {x: -11.758901, y: 105.41762, z: 15.625}
+    m_Value: {x: -79.674995, y: 4.693512, z: 40.299988}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -443,26 +443,26 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
     yGrid:
-      m_Target: 0
-      speed: 2
-      m_Value: 0
-    zGrid:
       m_Target: 1
       speed: 2
       m_Value: 1
+    zGrid:
+      m_Target: 0
+      speed: 2
+      m_Value: 0
   m_Rotation:
-    m_Target: {x: 0, y: 0, z: 0, w: 1}
+    m_Target: {x: 0.49952, y: 0.09832614, z: -0.057192173, w: 0.85880196}
     speed: 2
-    m_Value: {x: 0, y: 0, z: 0, w: 1}
+    m_Value: {x: 0.49952, y: 0.09832614, z: -0.057192173, w: 0.85880196}
   m_Size:
-    m_Target: 881.5497
+    m_Target: 1.9313228
     speed: 2
-    m_Value: 881.5497
+    m_Value: 1.9313228
   m_Ortho:
-    m_Target: 1
+    m_Target: 0
     speed: 2
-    m_Value: 1
-  m_LastSceneViewRotation: {x: -0.08717229, y: 0.89959055, z: -0.21045254, w: -0.3726226}
+    m_Value: 0
+  m_LastSceneViewRotation: {x: -0.15071401, y: 0.79552853, z: -0.22043815, w: -0.5438995}
   m_LastSceneViewOrtho: 0
   m_ReplacementShader: {fileID: 0}
   m_ReplacementString: 
@@ -531,6 +531,7 @@ MonoBehaviour:
   blendTreeGraph: {fileID: 0}
   blendTreeGraphGUI: {fileID: 0}
   m_AutoLiveLink: 0
+  m_LiveLinkFollowTransitions: 0
   m_MiniTool: 0
   m_SerializedLocked: 0
   m_CurrentEditor: 1
@@ -568,25 +569,24 @@ MonoBehaviour:
     m_AssetLabels: []
     m_AssetBundleNames: []
     m_VersionControlStates: []
-    m_SoftLockControlStates: []
     m_ReferencingInstanceIDs: 
     m_ScenePaths: []
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Scrips/Disc
+    - Assets/Resources/Minimap/icon
   m_ViewMode: 1
   m_StartGridSize: 96
   m_LastFolders:
-  - Assets/Scrips/Disc
+  - Assets/Resources/Minimap/icon
   m_LastFoldersGridSize: 96
   m_LastProjectPath: G:\Programmering\GitHub\DiscGolf\DiscGolf
   m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 74290000
-    m_LastClickedID: 10612
-    m_ExpandedIDs: 0000000088270000fc27000082280000c628000038290000f2290000302a00002a3400002c3400002e34000030340000323400003434000000ca9a3bffffff7f
+    m_SelectedIDs: b6330000
+    m_LastClickedID: 13238
+    m_ExpandedIDs: 0000000032260000de26000076270000ba27000038280000062900004c290000623300006433000066330000683300006a3300006c3300007833000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -614,7 +614,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: fe22fdff
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000088270000fc27000082280000c628000038290000f2290000302a00002a3400002c3400002e340000303400003234000034340000
+    m_ExpandedIDs: 0000000032260000de260000ba27000038280000062900004c290000623300006433000066330000683300006a3300006c330000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -639,8 +639,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: caf1ffff
-    m_LastClickedInstanceID: -3638
+    m_SelectedInstanceIDs: 924dfeff
+    m_LastClickedInstanceID: -111214
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: d249ffff4043fffface8feffb8240000f22a0000b6240000103a0000f03900005833fcff9817fcff2a250000c4250000a62f0000563000004636000072360000ba2d0000a42f0100402e00002c2a0000ee2b000052340000dca0ffff4c330000422e00009a2700005a280000fe250000082600002811feff922a00005c2c00002a2a0000802f0000a434000074330000b6280000c4280000062f0000a43f000002c2d4ff0228000042260000542600004a260000000000002a66040060250000e0280000
     m_RenameOverlay:
