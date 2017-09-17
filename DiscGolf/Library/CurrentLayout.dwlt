@@ -106,7 +106,7 @@ MonoBehaviour:
     y: 30
     width: 2544
     height: 1291
-  m_MinSize: {x: 681, y: 492}
+  m_MinSize: {x: 683, y: 492}
   m_MaxSize: {x: 14004, y: 14042}
   vertical: 0
   controlID: 11
@@ -130,7 +130,7 @@ MonoBehaviour:
     y: 0
     width: 1986
     height: 1291
-  m_MinSize: {x: 404, y: 492}
+  m_MinSize: {x: 406, y: 492}
   m_MaxSize: {x: 10002, y: 14042}
   vertical: 1
   controlID: 12
@@ -154,8 +154,8 @@ MonoBehaviour:
     y: 0
     width: 1986
     height: 787
-  m_MinSize: {x: 404, y: 221}
-  m_MaxSize: {x: 8004, y: 4021}
+  m_MinSize: {x: 406, y: 221}
+  m_MaxSize: {x: 8006, y: 4021}
   vertical: 0
   controlID: 13
 --- !u!114 &8
@@ -176,8 +176,8 @@ MonoBehaviour:
     y: 0
     width: 481
     height: 787
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 13}
   m_Panes:
   - {fileID: 13}
@@ -369,28 +369,28 @@ MonoBehaviour:
     height: 766
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 84070200
-    m_LastClickedID: 132996
-    m_ExpandedIDs: e6baf0ff90a1f2ff8cc5f3ffa6c6f3ff22c7f3ff32c7f3ff82c7f3ff94c7f3ffc6c7f3ffc8c7f3ffbc5ef4ff20f1ffffa8f1ffff40f2ffffdefbffff00000000600502008406020098060200e4060200f80602001007020084070200b4070200020802009a080200e6080200
+    m_SelectedIDs: f0060000
+    m_LastClickedID: 0
+    m_ExpandedIDs: 60f7ffffdefbffff00000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: Buttons
-      m_OriginalName: Buttons
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 133274
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 0
       m_ClientGUIView: {fileID: 8}
     m_SearchString: 
   m_ExpandedScenes:
-  - Hole1
+  - Test_Disc_Map
   m_CurrenRootInstanceID: 0
   m_Locked: 0
   m_CurrentSortingName: TransformSorting
@@ -426,9 +426,9 @@ MonoBehaviour:
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 201.47188, y: 46.58758, z: 348.9002}
+    m_Target: {x: 118.640915, y: 126.27063, z: 300.05664}
     speed: 2
-    m_Value: {x: 201.47188, y: 46.58758, z: 348.9002}
+    m_Value: {x: 118.640915, y: 126.27063, z: 300.05664}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -451,13 +451,13 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: 0.031305548, y: 0.5070835, z: -0.018435957, w: 0.86113095}
+    m_Target: {x: 0.10734902, y: 0.76962125, z: -0.13436191, w: 0.61490345}
     speed: 2
-    m_Value: {x: 0.031305548, y: 0.5070835, z: -0.018435957, w: 0.86113095}
+    m_Value: {x: 0.10734902, y: 0.76962125, z: -0.13436191, w: 0.61490345}
   m_Size:
-    m_Target: 12.324241
+    m_Target: 15.329767
     speed: 2
-    m_Value: 12.324241
+    m_Value: 15.329767
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -574,19 +574,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Resources
+    - Assets/Scrips/Disc
   m_ViewMode: 1
   m_StartGridSize: 96
   m_LastFolders:
-  - Assets/Resources
+  - Assets/Scrips/Disc
   m_LastFoldersGridSize: 96
   m_LastProjectPath: G:\Programmering\GitHub\DiscGolf\DiscGolf
   m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: c0270000
-    m_LastClickedID: 10176
-    m_ExpandedIDs: 00000000342600007a260000c82600007a270000c027000042280000122900005a290000bc330000be330000c0330000c2330000c4330000c633000000ca9a3bffffff7f
+    m_SelectedIDs: 90280000
+    m_LastClickedID: 10384
+    m_ExpandedIDs: 0000000034260000cc2600007e270000482800001c290000662900002432000026320000283200002a3200002c3200002e32000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -614,7 +614,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: fe22fdff
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000034260000e02600007a270000c0270000422800006a280000122900005a290000bc330000be330000c0330000c2330000c4330000c6330000
+    m_ExpandedIDs: 00000000342600007a260000cc2600007e270000482800001c290000662900002432000026320000283200002a3200002c3200002e320000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -641,7 +641,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 0
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: d249ffff4043fffface8feffb8240000f22a0000b6240000103a0000f03900005833fcff9817fcff2a250000c4250000a62f0000563000004636000072360000ba2d0000a42f0100402e00002c2a0000ee2b000052340000dca0ffff4c330000422e00009a2700005a280000fe250000082600002811feff922a00005c2c00002a2a0000802f0000a434000074330000b6280000c4280000062f0000a43f000002c2d4ff0228000042260000542600004a260000000000002a66040060250000e0280000
     m_RenameOverlay:
       m_UserAcceptedRename: 0

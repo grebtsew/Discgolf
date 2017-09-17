@@ -8,15 +8,15 @@ using System.Collections.Generic;
 
 public class Disc_Movement : MonoBehaviour
 {
-    // statics
-    public static double GRAVITY = -9.81; //The acceleration of gravity (m/s^2).
-    public static double RHO = 1.23; //The density of air in kg/m^3.
-    private static float ROLL_DECREASE = 0.85f;
-    private static float ROLL_SPEED = 10;
-    public static float MAXSPEED = 30f; // Max speed the disc can have
-    private static float smooth_delta_loss = 1.001f;
-    private static float smooth_delta_turn_loss = 1.004f;
+    // const
+    public const double GRAVITY = -9.81; //The acceleration of gravity (m/s^2).
+    public const double RHO = 1.23; //The density of air in kg/m^3.
+    private const float ROLL_DECREASE = 0.85f;
+    private const float ROLL_SPEED = 10;
+    private const float smooth_delta_loss = 1.001f;
+    private const float smooth_delta_turn_loss = 1.004f;
 
+    public float MAXSPEED = 30f; // Max speed the disc can have
     public Rigidbody rigidBody;
     private Disc Disc; // The Frisbee
     private basket_script basket; // an obligatory basket
@@ -36,9 +36,7 @@ public class Disc_Movement : MonoBehaviour
     private Vector3 throwpos;
 
     public bool isThrown = false; // Is the disc in the air
-    private bool isGrounded = false; // Is the disc on the ground
     private bool isRotate = false; // If the disc in the air it rotates
-    private bool hitStuff = false; // extra collision check
     public bool throw_mode = true; // is throw mode
     public bool backhand = true; // fore or backhand
     private bool show_lines = false;
@@ -176,13 +174,12 @@ public class Disc_Movement : MonoBehaviour
         if (isThrown)
         {
            
-            if (!hitStuff)
-            {
+           
 
                // flat flight physics
                 Gravity_physics();
                 Drag_physics();
-            }
+            
 
             CheckLanding();
 
@@ -235,7 +232,7 @@ public class Disc_Movement : MonoBehaviour
     void FixedUpdate()
     {
 
-        if (isThrown && !isGrounded)
+        if (isThrown )
         {
             Fade_movement(plan_speed);
 
@@ -317,7 +314,7 @@ public class Disc_Movement : MonoBehaviour
         fade_z_physics = (float)Math.Cos(Math.PI + (transform.eulerAngles.y * Math.PI) / 180);
 
         number_throws++;                        // count throws
-        hitStuff = false;                       // hit terrain reset
+       
         rigidBody.useGravity = true;            // activate gravity
         playerThrust = fast_loss;               // 30%
 
@@ -380,8 +377,7 @@ public class Disc_Movement : MonoBehaviour
     {
 
         // while rotating
-        if (delta_rotation_speed > 0)
-        {
+       
                 // reduce rotation
                 delta_rotation_speed /= smooth_delta_loss; // % rot loss
                 rot = delta_rotation_speed * Time.deltaTime;
@@ -412,18 +408,10 @@ public class Disc_Movement : MonoBehaviour
                 Fade();
             }
 
-        }
-        else
-        {
-            Rotstopped();
-        }
+        
+     
     }
-    private void Rotstopped()
-    {
-        hitStuff = true;
-        Physics.gravity = new Vector3(0, -9.81f, 0);  // Reset Gravity. Nicer look when disc hits things and fall down
-
-    }
+   
     private void Stabelize()
     {
         // stabelise disc
@@ -456,18 +444,31 @@ public class Disc_Movement : MonoBehaviour
     /// 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name.Contains("Terrain"))
-        {
-            isGrounded = true;
-        }
+        
 
-        Roller_physics();
+        if (sideDir.y > 0.5f && !backhand || sideDir.y < -0.5 && backhand)
+        {
+            Roller_physics();
+        } else
+        {
+            Skip_physics();
+        }
+        
     }
+    private void Skip_physics()
+    {
+        // add material
+        // add more lift
+        // rotation
+
+        rigidBody.AddForce(rigidBody.velocity+ rigidBody.transform.up * rigidBody.velocity.magnitude);
+    }
+
     private void Roller_physics()
     {
         // roller physics
-        if (sideDir.y > 0.5f && !backhand || sideDir.y < -0.5 && backhand)
-        {
+       // make dynamic
+
             if (backhand)
             {
                 rigidBody.AddForce(new Vector3(-sideDir.y * rot * ROLL_SPEED * fade_x, 0, -sideDir.y * rot * ROLL_SPEED * fade_z));
@@ -477,7 +478,7 @@ public class Disc_Movement : MonoBehaviour
             }
            
             delta_rotation_speed *= ROLL_DECREASE + 0.01f * Disc.TURN;
-        }
+        
     }
 
     /// Reseting throw and game
@@ -486,7 +487,7 @@ public class Disc_Movement : MonoBehaviour
     void ResetDisc()
     {
         isThrown = false; // Next throw
-        isGrounded = false; // Not on ground
+       
         isRotate = false; // The disc will not rotate
     }
     void NextThrow()
