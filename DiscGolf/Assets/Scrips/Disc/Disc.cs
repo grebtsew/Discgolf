@@ -6,11 +6,14 @@ public class Disc : MonoBehaviour {
 
     public double m = 0.175; //The mass of a standard frisbee in kilograms.
     public double AREA = 0.0568; //The area of a standard frisbee.
-    public static double CL0 = 0.1; //The lift coefficient at alpha = 0.
-    public static double CLA = 1.4; //The lift coefficient dependent on alpha.
-    public static double CD0 = 0.08;  //The drag coefficent at alpha = 0.
-    public static double CDA = 2.72;  //The drag coefficient dependent on alpha.
-    public static double ALPHA0 = -4;
+    public const double CL0 = 0.1; //The lift coefficient at alpha = 0.
+    public const double CLA = 1.4; //The lift coefficient dependent on alpha.
+    public const double CD0 = 0.08;  //The drag coefficent at alpha = 0.
+    public const double CDA = 2.72;  //The drag coefficient dependent on alpha.
+    public const double ALPHA0 = -4;
+
+    public const double RHO = 1.23;
+    //The density of air in kg/m^3.
 
     /* SPEED  1 - 15
      * Speed is the rate at which a disc can travel through the air.

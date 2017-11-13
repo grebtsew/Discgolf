@@ -218,11 +218,18 @@ public class Disc_Movement : MonoBehaviour
     private void Drag_physics()
     {
         // drag
-        delta_speed_drag = (1 - Math.Abs(sideDir.y)) * Math.Pow((Math.Sin((transform.eulerAngles.z * Math.PI) / 180) - Disc.ALPHA0) * Math.PI / 180, 2);
+       //  old drag
+        delta_speed_drag = Math.Pow((Math.Sin((transform.eulerAngles.z * Math.PI) / 180) - Disc.ALPHA0) * Math.PI / 180, 2);
         delta_resistance = (Disc.CD0 + Disc.CDA * delta_speed_drag)*(1/Disc.SPEED)*2;
         delta_drag = RHO * Math.Pow(locVel.z, 2) * Disc.AREA * delta_resistance * Time.deltaTime;
         rigidBody.drag = (float)delta_drag ;
        
+
+       // double cd = Disc.CD0 + Disc.CDA * Math.Pow((Math.Sin((transform.eulerAngles.z - Disc.ALPHA0) * Math.PI/180, 2) * Math.PI / 180, 2);
+     //   rigidBody.drag = (float)  Disc.RHO ;
+
+
+
     }
     void CheckLanding()
     {
