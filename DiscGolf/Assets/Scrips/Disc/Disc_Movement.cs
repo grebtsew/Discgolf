@@ -220,7 +220,8 @@ public class Disc_Movement : MonoBehaviour
         // drag
        //  old drag
         delta_speed_drag = Math.Pow((Math.Sin((transform.eulerAngles.z * Math.PI) / 180) - Disc.ALPHA0) * Math.PI / 180, 2);
-        delta_resistance = (Disc.CD0 + Disc.CDA * delta_speed_drag)*(1/Disc.SPEED)*2;
+        //   delta_resistance = (Disc.CD0 + Disc.CDA * delta_speed_drag)*(1/Disc.SPEED)*2;
+        delta_resistance = (Disc.CD0 + Disc.CDA * delta_speed_drag);
         delta_drag = RHO * Math.Pow(locVel.z, 2) * Disc.AREA * delta_resistance * Time.deltaTime;
         rigidBody.drag = (float)delta_drag ;
        
@@ -331,18 +332,19 @@ public class Disc_Movement : MonoBehaviour
             ClearLines();
         }
 
-        fade_speed = standard_fade_speed + 2*Disc.FADE;
+      //  fade_speed = standard_fade_speed + 2*Disc.FADE;
         delta_rotation_speed = rotateSpeed * playerThrust; // rotation start
-
+      
+        /*
         stable_speed = Disc.SPEED;                             // speed to stabelize disc
         fade_rot_speed = min_fade_speed + Disc.FADE;           // when to start fade
         plan_speed = Disc.FADE*2 + glide_normalizer;         // fade, turn speed
         glide = Disc.GLIDE - glide_normalizer;
-        
+        */
 
         MAXSPEED = (throw_speed / 10) + min_speed;   // set speed
 
-        turn_drag =  Disc.TURN * (MAXSPEED - min_speed)/10;
+      //  turn_drag =  Disc.TURN * (MAXSPEED - min_speed)/10;
 
         rigidBody.isKinematic = false;          // Add gravity to the disc
 
@@ -486,7 +488,7 @@ public class Disc_Movement : MonoBehaviour
                 rigidBody.AddForce(new Vector3(sideDir.y * rot * ROLL_SPEED * fade_x, 0, sideDir.y * rot * ROLL_SPEED * fade_z));
             }
            
-            delta_rotation_speed *= ROLL_DECREASE + 0.01f * Disc.TURN;
+         //   delta_rotation_speed *= ROLL_DECREASE + 0.01f * Disc.TURN;
         
     }
 

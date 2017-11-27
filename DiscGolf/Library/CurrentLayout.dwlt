@@ -20,7 +20,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 2}
-  m_MinSize: {x: 950, y: 300}
+  m_MinSize: {x: 950, y: 542}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -109,7 +109,7 @@ MonoBehaviour:
   m_MinSize: {x: 683, y: 492}
   m_MaxSize: {x: 14004, y: 14042}
   vertical: 0
-  controlID: 119
+  controlID: 11
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -133,7 +133,7 @@ MonoBehaviour:
   m_MinSize: {x: 406, y: 492}
   m_MaxSize: {x: 10002, y: 14042}
   vertical: 1
-  controlID: 73
+  controlID: 12
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -369,9 +369,9 @@ MonoBehaviour:
     height: 766
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 
-    m_LastClickedID: 0
-    m_ExpandedIDs: 18fcffff00000000
+    m_SelectedIDs: 2cc2faff
+    m_LastClickedID: -343508
+    m_ExpandedIDs: 2ec2fafffacafaff6c54fbfff2e1fbff9834fcff5865feff5066feff9866feff9a66feff306afeff50f1ffff18f2ffff90f2ffff94f2ffff18fcffff00000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -390,7 +390,7 @@ MonoBehaviour:
       m_ClientGUIView: {fileID: 8}
     m_SearchString: 
   m_ExpandedScenes:
-  - Test_Disc_Map
+  - Range_1
   m_CurrenRootInstanceID: 0
   m_Locked: 0
   m_CurrentSortingName: TransformSorting
@@ -421,14 +421,14 @@ MonoBehaviour:
     width: 1501
     height: 766
   m_SceneLighting: 0
-  lastFramingTime: 6818.865381459688
+  lastFramingTime: 2105.2753637435344
   m_2DMode: 0
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 118.640915, y: 126.27063, z: 300.05664}
+    m_Target: {x: 51.16009, y: 3.099441, z: 121.54641}
     speed: 2
-    m_Value: {x: 118.640915, y: 126.27063, z: 300.05664}
+    m_Value: {x: 51.16009, y: 3.099441, z: 121.54641}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -451,18 +451,18 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: 0.10734902, y: 0.76962125, z: -0.13436191, w: 0.61490345}
+    m_Target: {x: -0.21757267, y: -0.01052308, z: 0.0023466903, w: -0.97598463}
     speed: 2
-    m_Value: {x: 0.10734902, y: 0.76962125, z: -0.13436191, w: 0.61490345}
+    m_Value: {x: -0.21757267, y: -0.01052308, z: 0.0023466903, w: -0.97598463}
   m_Size:
-    m_Target: 15.329767
+    m_Target: 23.392788
     speed: 2
-    m_Value: 15.329767
+    m_Value: 23.392788
   m_Ortho:
     m_Target: 0
     speed: 2
     m_Value: 0
-  m_LastSceneViewRotation: {x: -0.15071401, y: 0.79552853, z: -0.22043815, w: -0.5438995}
+  m_LastSceneViewRotation: {x: 0.18285686, y: 0.52043957, z: -0.115201354, w: 0.8260961}
   m_LastSceneViewOrtho: 0
   m_ReplacementShader: {fileID: 0}
   m_ReplacementString: 
@@ -574,19 +574,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Scrips/Disc
+    - Assets/Resources/Backups
   m_ViewMode: 1
   m_StartGridSize: 96
   m_LastFolders:
-  - Assets/Scrips/Disc
+  - Assets/Resources/Backups
   m_LastFoldersGridSize: 96
   m_LastProjectPath: G:\Programmering\GitHub\DiscGolf\DiscGolf
   m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 8a290000
-    m_LastClickedID: 10634
-    m_ExpandedIDs: 000000008c270000ee2700008c2800004a2900000a2a00004c2a0000a0340000a2340000a4340000a6340000a8340000aa34000000ca9a3bffffff7f
+    m_SelectedIDs: 16280000
+    m_LastClickedID: 10262
+    m_ExpandedIDs: 000000008c270000042800007a2800008c280000d22800004a2900000a2a00004c2a0000a0340000a2340000a4340000a6340000a8340000aa34000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -870,7 +870,7 @@ MonoBehaviour:
   m_ScrollPosition: {x: 0, y: 0}
   m_InspectorMode: 0
   m_PreviewResizer:
-    m_CachedPref: 333
+    m_CachedPref: -333
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
   m_PreviewWindow: {fileID: 0}

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Disc : MonoBehaviour {
 
-    public double m = 0.175; //The mass of a standard frisbee in kilograms.
-    public double AREA = 0.0568; //The area of a standard frisbee.
+    public const double m = 0.175; //The mass of a standard frisbee in kilograms.
+    public const double AREA = 0.0568; //The area of a standard frisbee.
     public const double CL0 = 0.1; //The lift coefficient at alpha = 0.
     public const double CLA = 1.4; //The lift coefficient dependent on alpha.
     public const double CD0 = 0.08;  //The drag coefficent at alpha = 0.
@@ -23,15 +23,15 @@ public class Disc : MonoBehaviour {
      * and may actually go farther downwind. High speed discs are not recommended for beginners
      * as they require more power to fly properly.
      */
-    public float SPEED;
+    // public float SPEED;
 
     /* GLIDE 1 - 7
      * Glide describes the discs ability to maintain loft during flight.
      * Discs with more glide are best for new players, and for producing maximum distance.
      * Beginners wanting more distance should choose discs with more glide.
      * Discs with less glide are more accurate in high wind situations.
-     */ 
-    public float GLIDE;
+     */
+    // public float GLIDE;
 
     /* TURN +1 - -5
      * High Speed Turn is the tendency of a disc to turn over or bank to the right (for RHBH throws)
@@ -39,7 +39,7 @@ public class Disc : MonoBehaviour {
      * while a -5 rating will turn the most. Discs rated -3 to -5 make good roller discs.
      * Discs with less turn are more accurate in the wind. Discs with more turn are easier to throw for beginners.
      */
-    public float TURN;
+    //   public float TURN;
 
     /* FADE 0 - 5
      * Low Speed Fade is the discs tendency to hook left (for RHBH throws)
@@ -47,14 +47,16 @@ public class Disc : MonoBehaviour {
      * while a disc rated 5 will hook hard at the end of the flight. 
      * High fade discs are usually used for Spike and Skip shots.
      */
-    public float FADE;     
+    //  public float FADE;     
 
     void Start()
     {
+        /*
         SPEED = Clamp(SPEED, 1, 15);
         GLIDE = Clamp(GLIDE, 1, 7);
         TURN = Clamp(TURN, -5, 1); 
         FADE = Clamp(FADE, 0, 5); 
+    */
     }
 
     public static float Clamp(float value, float min, float max)
