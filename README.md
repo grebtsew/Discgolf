@@ -1,4 +1,4 @@
-Discgolf game
+# Discgolf game
 
 This is a discgolf game under development.
 
