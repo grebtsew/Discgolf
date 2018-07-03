@@ -1,5 +1,9 @@
 # Discgolf game
 
-This is a discgolf game under development.
-
 The game is created in Unity C#
+
+
+# Upcoming
+
+1. Fix this game as a simulator test
+2. Add a demo image 
