@@ -22,6 +22,7 @@ public class updateHand : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         if (disc.backhand)
         {
             text.text = "B";
@@ -30,5 +31,6 @@ public class updateHand : MonoBehaviour
         {
             text.text = "F";
         }
+         */
     }
 }

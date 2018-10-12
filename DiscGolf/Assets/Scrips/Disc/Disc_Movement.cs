@@ -9,7 +9,7 @@ using System.Collections.Generic;
 public class Disc_Movement : MonoBehaviour
 {
     // const
-    public const double GRAVITY = -9.81; //The acceleration of gravity (m/s^2).
+    public const float GRAVITY = -9.81f; //The acceleration of gravity (m/s^2).
     public const double RHO = 1.23; //The density of air in kg/m^3.
     private const float ROLL_DECREASE = 0.85f;
     private const float ROLL_SPEED = 10;
@@ -75,6 +75,8 @@ public class Disc_Movement : MonoBehaviour
     private double delta_drag; // drag
     private bool fade_started = false;
 
+    private double cl = 0;
+ private double cd = 0;
     void Start()
     {
         cam = FindObjectOfType<follow_camera>();
@@ -88,6 +90,7 @@ public class Disc_Movement : MonoBehaviour
        
 
         ResetDisc();
+      
     }
 
     /// Tracker Line methods
@@ -166,6 +169,39 @@ public class Disc_Movement : MonoBehaviour
         throw_speed = f;
     }
 
+
+    private void Gyroscope_physics(){
+
+            // inertia
+
+            float i = (float) (1/2 * Disc.m * Math.Pow((Disc.diameter/2), 2));
+            rigidBody.AddRelativeTorque(new Vector3(rigidBody.angularVelocity.x , rigidBody.angularVelocity.y , rigidBody.angularVelocity.z ) * i);
+        
+    }
+
+    private void Aerodynamic_physics(){
+        //z = Roll - p
+        float crr = 0.014f;
+        float crp = -0.0055f;
+        float temp = (crr*rigidBody.angularVelocity.y + crp*rigidBody.angularVelocity.z);
+        double R = temp* 1/2 * RHO * Math.Pow(rigidBody.velocity.magnitude,2) * Disc.AREA * Disc.diameter;
+        //x = Pitch  - q
+        float CM0 = -0.08f;
+        float CMA = 0.43f;
+        float CMq = - 0.005f;
+         temp = (CM0 + CMA*transform.eulerAngles.x + CMq*rigidBody.angularVelocity.x);
+        double M =temp * 1/2 * RHO * Math.Pow(rigidBody.velocity.magnitude,2) * Disc.AREA * Disc.diameter;
+
+        //y = spin down - r
+        float CNR = -0.000034f;
+        double N = (CNR*rigidBody.angularVelocity.y) * 1/2 * RHO * Math.Pow(rigidBody.velocity.magnitude,2) * Disc.AREA * Disc.diameter;
+        
+        
+
+        rigidBody.AddRelativeTorque((float)R,(float)M,(float)N);
+        
+        Debug.Log(R + " " + M + " " + N);
+    }
     
     /// Update related methods
     /// 
@@ -176,20 +212,21 @@ public class Disc_Movement : MonoBehaviour
         if (isThrown)
         {
            
-           
 
                // flat flight physics
-                Gravity_physics();
+                Lift_And_Gravity_physics();
                 Drag_physics();
-            
+                Aerodynamic_physics();
 
             CheckLanding();
             
             // clamp speedlimit
-            if (rigidBody.velocity.magnitude > MAXSPEED)
-                rigidBody.velocity = rigidBody.velocity.normalized * MAXSPEED;
+        //    if (rigidBody.velocity.magnitude > MAXSPEED)
+          //      rigidBody.velocity = rigidBody.velocity.normalized * MAXSPEED;
 
-        } else if (throw_animation)
+        } else
+        
+         if (throw_animation)
         {
 
            // Throw animation
@@ -207,105 +244,31 @@ public class Disc_Movement : MonoBehaviour
             }
         }
     }
-    private void Gravity_physics()
-    {
-        // gravity
-        delta_lift = (1 - Math.Abs(sideDir.y)) * Disc.CL0 + Disc.CLA * Math.Sin((transform.localEulerAngles.z * Math.PI) / 180) * Math.PI / 180;
-        locVel = transform.InverseTransformDirection(rigidBody.velocity);
-        delta_gravity = RHO * Math.Pow(locVel.z, 2) * Disc.AREA * delta_lift / 2 / Disc.m + GRAVITY + glide;
-        Physics.gravity = new Vector3(0, (float)delta_gravity, 0);
+
+
+    private void Lift_And_Gravity_physics(){
+        double deltavy = ( RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cl /2 /  Disc.m + GRAVITY)  ;
+        rigidBody.AddForce(0, (float) deltavy, 0, ForceMode.Acceleration);
     }
-    private void Drag_physics()
-    {
-        // drag
-       //  old drag
-        delta_speed_drag = Math.Pow((Math.Sin((transform.eulerAngles.z * Math.PI) / 180) - Disc.ALPHA0) * Math.PI / 180, 2);
-        //   delta_resistance = (Disc.CD0 + Disc.CDA * delta_speed_drag)*(1/Disc.SPEED)*2;
-        delta_resistance = (Disc.CD0 + Disc.CDA * delta_speed_drag);
-        delta_drag = RHO * Math.Pow(locVel.z, 2) * Disc.AREA * delta_resistance * Time.deltaTime;
-        rigidBody.drag = (float)delta_drag ;
-       
-
-       // double cd = Disc.CD0 + Disc.CDA * Math.Pow((Math.Sin((transform.eulerAngles.z - Disc.ALPHA0) * Math.PI/180, 2) * Math.PI / 180, 2);
-     //   rigidBody.drag = (float)  Disc.RHO ;
-
-
-
+  
+    private void Drag_physics(){
+        delta_drag = RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cd ;
+        rigidBody.AddForce(-rigidBody.velocity.normalized * (float)delta_drag, ForceMode.Force);
     }
     void CheckLanding()
     {
         if(rigidBody.velocity.x <= 0 && rigidBody.velocity.y <= 0 && rigidBody.velocity.z <= 0)
         {
             distance.text = Math.Round(Vector3.Distance(discInitialPosition, transform.position)).ToString();
-            delta_rotation_speed *= fast_loss;
+         //  delta_rotation_speed *= fast_loss;
         }
     }
-    void FixedUpdate()
-    {
-
-        if (isThrown )
-        {
-            Fade_movement(plan_speed);
-
-        }
-        if (isRotate)
-        {
-           
-            Rotate();
-        }
-        
-    }
+ 
    
-    private void Fade_movement(float speed)
-    {
-        // Fade at end of throw and also stabalization
+    
 
-        sideDir = Vector3.Cross(rigidBody.transform.up, rigidBody.velocity).normalized;
-
-        if (sideDir.y <= 0.5f && sideDir.y >= -0.5f)
-        {
-            rigidBody.AddForce(new Vector3(fade_z_physics * speed * sideDir.y, 0, fade_x * speed * sideDir.y));
-
-            
-        } else
-        {
-            // to make span from 0 - 0.5 - 0
-           if( sideDir.y > 0.5f)
-            {
-                
-                rigidBody.AddForce(new Vector3(fade_z_physics * speed * (1 - sideDir.y), 0, fade_x * speed * (1 - sideDir.y)));
-            }
-            if (sideDir.y < -0.5f)
-            {
-              
-                rigidBody.AddForce(new Vector3(fade_z_physics * speed * (-1 - sideDir.y), 0, fade_x * speed * (-1 - sideDir.y)));
-            }
-            
-        }
-    }
-
-    /// Start Throw methods
-    /// 
-    /// 
-    private void Set_up_force_x()
-    {
-        // Force side (Wind)
-        force.x = Random.Range(50, 60) * playerThrust;
-    }
-    private void Set_up_force_y()
-    {
-        // Force up (xTilt)
-        if (transform.rotation.x < 0) force.y = Random.Range(10, 20) + (playerThrust * 100);
-        else if (playerThrust > 0 && playerThrust < 0.40f) force.y = Random.Range(0, 10) + (playerThrust * 100);
-        else if (playerThrust >= 0.40f && playerThrust < 0.50f) force.y = Random.Range(10, 20) + (playerThrust * 100);
-        else if (playerThrust >= 0.50f && playerThrust < 0.60f) force.y = Random.Range(20, 30) + (playerThrust * 100);
-        else if (playerThrust >= 0.60f && playerThrust < 0.70f) force.y = Random.Range(30, 40) + (playerThrust * 100);
-        else if (playerThrust >= 0.70f && playerThrust < 0.80f) force.y = Random.Range(40, 50) + (playerThrust * 100);
-        else if (playerThrust >= 0.80f && playerThrust < 0.90f) force.y = Random.Range(50, 60) + (playerThrust * 100);
-
-        // Force up (160 - 170)
-        else force.y = Random.Range(70, 90) + (playerThrust * 100);
-    }
+    
+  
     private void SetUpThrow()
     {
         // Added variables
@@ -313,18 +276,12 @@ public class Disc_Movement : MonoBehaviour
         discInitialRotation = transform.rotation; // Get disc localrotation
 
         // movement dependent on y rotation as radians
-        fade_x = (float)Math.Sin((transform.eulerAngles.y * Math.PI) / 180);
-        fade_z = (float)Math.Cos((transform.eulerAngles.y * Math.PI) / 180);
-        fade_z_physics = (float)Math.Cos(Math.PI + (transform.eulerAngles.y * Math.PI) / 180);
+      //  fade_x = (float)Math.Sin((transform.eulerAngles.y * Math.PI) / 180);
+      //  fade_z = (float)Math.Cos((transform.eulerAngles.y * Math.PI) / 180);
+       // fade_z_physics = (float)Math.Cos(Math.PI + (transform.eulerAngles.y * Math.PI) / 180);
 
-        number_throws++;                        // count throws
-        fade_started = false;
-        rigidBody.useGravity = true;            // activate gravity
-        playerThrust = fast_loss;               // 30%
-
-        // random forces
-        Set_up_force_x();
-        Set_up_force_y();
+       
+        
 
         // clear old lines
         if (show_lines)
@@ -335,26 +292,34 @@ public class Disc_Movement : MonoBehaviour
       //  fade_speed = standard_fade_speed + 2*Disc.FADE;
         delta_rotation_speed = rotateSpeed * playerThrust; // rotation start
       
-        /*
-        stable_speed = Disc.SPEED;                             // speed to stabelize disc
-        fade_rot_speed = min_fade_speed + Disc.FADE;           // when to start fade
-        plan_speed = Disc.FADE*2 + glide_normalizer;         // fade, turn speed
-        glide = Disc.GLIDE - glide_normalizer;
-        */
-
+     
         MAXSPEED = (throw_speed / 10) + min_speed;   // set speed
 
       //  turn_drag =  Disc.TURN * (MAXSPEED - min_speed)/10;
 
         rigidBody.isKinematic = false;          // Add gravity to the disc
 
+
         force.z = power;                        // set up z-force
 
-        // Add force
-        rigidBody.AddForce(transform.right * force.x); // Add force on X to the disc
-        rigidBody.AddForce(transform.up * force.y); // Add force on Y to the disc
-        rigidBody.AddForce(transform.forward * force.z); // Add force on Z to the disc
+        
+        rigidBody.mass = Disc.m;        
+        rigidBody.useGravity = false;
+
+           // init
+        cd = Disc.CD0 + Disc.CDA * Mathf.Pow((float)((-rigidBody.rotation.x - Disc.ALPHA0)*Math.PI / 180),2);
+        cl = Disc.CL0 + Disc.CLA *-rigidBody.rotation.x *Math.PI / 180;
+      
+        Debug.Log(rigidBody.rotation.x);
+     
+        rigidBody.AddRelativeTorque(0,rotateSpeed,0);
        
+      //  rigidBody.AddForce(transform.right * force.x); // Add force on X to the disc
+      //  rigidBody.AddForce(transform.up * force.y); // Add force on Y to the disc
+        rigidBody.AddForce(transform.forward * force.z, ForceMode.VelocityChange); // Add force on Z to the disc
+       
+     
+
         isThrown = true; // Disc is thrown by player
         throw_mode = true;
         isRotate = true; // The disc will rotate
@@ -370,127 +335,11 @@ public class Disc_Movement : MonoBehaviour
         Throws.text = number_throws.ToString();
     }
 
-    /// Rotation Methods
-    /// 
-    /// 
-    private void Rotate()
-    {
+    
 
-        // while rotating
-       
-                // reduce rotation
-                delta_rotation_speed /= smooth_delta_loss; // % rot loss
-                rot = delta_rotation_speed * Time.deltaTime;
-            
-            // rotation direction
-            if (backhand)
-            {
 
-                transform.Rotate(Vector3.up, rot);
-            }
-            else
-            {
-                transform.Rotate(Vector3.up, -rot);
-            }
+   
 
-      
-        // handle stabelization and fade
-        if (rigidBody.velocity.magnitude > fade_rot_speed && !fade_started)
-            {
-                
-                Stabelize();
-                Flipp_movement();
-
-            }
-            else
-            {
-            if (rigidBody.velocity.magnitude > 0)
-            {
-                fade_started = true;
-            }
-            
-                Fade();
-            }
-
-        
-     
-    }
-    private void Flipp_movement()
-    {
-        // turn dependent on disc TURN
-        sideDir = Vector3.Cross(rigidBody.transform.up, rigidBody.velocity).normalized;
-        rigidBody.AddForce(new Vector3(fade_z_physics * turn_drag * (1 - Math.Abs(sideDir.y)), 0, fade_x * turn_drag));
-        turn_drag /= smooth_delta_turn_loss;
-
-    }
-    private void Stabelize()
-    {
-        // stabelise disc
-        if (sideDir.y < 0.8f && sideDir.y > -0.8f)
-        {
-
-            if (rigidBody.rotation.x != 0 && rigidBody.rotation.y != 0)
-            {
-                rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.Euler(0, transform.localEulerAngles.y, 0), stable_speed * Time.deltaTime));
-              
-            }
-
-        }
-    }
-    private void Fade()
-    {
-        // fade - solution for all directions!
-        if (backhand)
-        {
-            rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.Euler(90 * fade_x, transform.rotation.y, 90 * fade_z), fade_speed * Time.deltaTime));
-        }
-        else
-        {
-            rigidBody.MoveRotation(Quaternion.RotateTowards(rigidBody.rotation, Quaternion.Euler(-90 * fade_x, transform.rotation.y, -90 * fade_z), fade_speed * Time.deltaTime));
-        }
-    }
-
-    /// Collision
-    /// 
-    /// 
-    void OnCollisionEnter(Collision collision)
-    {
-        
-
-        if (sideDir.y > 0.5f && !backhand || sideDir.y < -0.5 && backhand)
-        {
-            Roller_physics();
-        } else
-        {
-            Skip_physics();
-        }
-        
-    }
-    private void Skip_physics()
-    {
-        // add material
-        // add more lift
-        // rotation
-
-      //  rigidBody.AddForce(rigidBody.velocity+ rigidBody.transform.up * rigidBody.velocity.magnitude);
-    }
-
-    private void Roller_physics()
-    {
-        // roller physics
-       // make dynamic
-
-            if (backhand)
-            {
-                rigidBody.AddForce(new Vector3(-sideDir.y * rot * ROLL_SPEED * fade_x, 0, -sideDir.y * rot * ROLL_SPEED * fade_z));
-            } else
-            {
-                rigidBody.AddForce(new Vector3(sideDir.y * rot * ROLL_SPEED * fade_x, 0, sideDir.y * rot * ROLL_SPEED * fade_z));
-            }
-           
-         //   delta_rotation_speed *= ROLL_DECREASE + 0.01f * Disc.TURN;
-        
-    }
 
     /// Reseting throw and game
     /// 

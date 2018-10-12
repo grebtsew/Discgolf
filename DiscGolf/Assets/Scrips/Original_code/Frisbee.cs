@@ -42,9 +42,9 @@ public class Frisbee : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (kast) { 
+        
         simulate( 20, 0, 1, Time.deltaTime);
-        }
+        
 
         
     }

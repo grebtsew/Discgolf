@@ -4,16 +4,7 @@ using UnityEngine;
 
 public class Disc : MonoBehaviour {
 
-    public const double m = 0.175; //The mass of a standard frisbee in kilograms.
-    public const double AREA = 0.0568; //The area of a standard frisbee.
-    public const double CL0 = 0.1; //The lift coefficient at alpha = 0.
-    public const double CLA = 1.4; //The lift coefficient dependent on alpha.
-    public const double CD0 = 0.08;  //The drag coefficent at alpha = 0.
-    public const double CDA = 2.72;  //The drag coefficient dependent on alpha.
-    public const double ALPHA0 = -4;
-
-    public const double RHO = 1.23;
-    //The density of air in kg/m^3.
+     [Header("Disc Standard Attributes")]
 
     /* SPEED  1 - 15
      * Speed is the rate at which a disc can travel through the air.
@@ -23,7 +14,7 @@ public class Disc : MonoBehaviour {
      * and may actually go farther downwind. High speed discs are not recommended for beginners
      * as they require more power to fly properly.
      */
-    // public float SPEED;
+     public float SPEED;
 
     /* GLIDE 1 - 7
      * Glide describes the discs ability to maintain loft during flight.
@@ -31,7 +22,7 @@ public class Disc : MonoBehaviour {
      * Beginners wanting more distance should choose discs with more glide.
      * Discs with less glide are more accurate in high wind situations.
      */
-    // public float GLIDE;
+     public float GLIDE;
 
     /* TURN +1 - -5
      * High Speed Turn is the tendency of a disc to turn over or bank to the right (for RHBH throws)
@@ -39,7 +30,7 @@ public class Disc : MonoBehaviour {
      * while a -5 rating will turn the most. Discs rated -3 to -5 make good roller discs.
      * Discs with less turn are more accurate in the wind. Discs with more turn are easier to throw for beginners.
      */
-    //   public float TURN;
+       public float TURN;
 
     /* FADE 0 - 5
      * Low Speed Fade is the discs tendency to hook left (for RHBH throws)
@@ -47,20 +38,54 @@ public class Disc : MonoBehaviour {
      * while a disc rated 5 will hook hard at the end of the flight. 
      * High fade discs are usually used for Spike and Skip shots.
      */
-    //  public float FADE;     
+      public float FADE;     
+
+    [Header("Shape")]
+    
+        public float diameter; // in cm
+        public float weight; // in g
+
+        public float rim_thickness; // 
+        public float rim_height; //
+        public float center_height; //
+
+    [Header("Specifics")]
+        public string name;
+        public string approved;
+
+    [Header("Constants")]
+        public float resistant_constant; // 
+        public float lift_constant; //
+
+    [Header("Time dependent")]
+      
+        public float health = 100;
 
     void Start()
     {
-        /*
+        
+        // Clamp values of flight parameters, max and min
         SPEED = Clamp(SPEED, 1, 15);
         GLIDE = Clamp(GLIDE, 1, 7);
         TURN = Clamp(TURN, -5, 1); 
         FADE = Clamp(FADE, 0, 5); 
-    */
     }
 
     public static float Clamp(float value, float min, float max)
     {
         return (value < min) ? min : (value > max) ? max : value;
     }
+
+    /* These are old factors from old implementation! */
+    public const float m = 0.175f; //The mass of a standard frisbee in kilograms.
+    public const double AREA = 0.0568; //The area of a standard frisbee.
+    public const double CL0 = 0.1; //The lift coefficient at alpha = 0.
+    public const double CLA = 1.4; //The lift coefficient dependent on alpha.
+    public const double CD0 = 0.08;  //The drag coefficent at alpha = 0.
+    public const double CDA = 2.72;  //The drag coefficient dependent on alpha.
+    public const double ALPHA0 = -4;
+
+
 }
+
+

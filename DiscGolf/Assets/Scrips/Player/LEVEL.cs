@@ -1,0 +1,6 @@
+
+public enum LEVEL
+
+{
+    BEGINNER, AMATEUR, OPEN, ROBOTIC
+}
