@@ -18,6 +18,8 @@ public class Disc_Movement : MonoBehaviour
 
     public float MAXSPEED = 30f; // Max speed the disc can have
     public Rigidbody rigidBody;
+
+    private float alpha = 0;
     private Disc Disc; // The Frisbee
     private basket_script basket; // an obligatory basket
     public Vector3 discNextPosition; // Next throw position
@@ -169,17 +171,58 @@ public class Disc_Movement : MonoBehaviour
         throw_speed = f;
     }
 
+  
 
-    private void Gyroscope_physics(){
+    /*
+     These are the forces applied to flying disc 
+     */
 
-            // inertia
+    private void Lift_physics(){
+        // Lift physics - Lift the disc dependent on alpha angle and velocity - Disc height
+        // Inspiration source : http://scripts.mit.edu/~womens-ult/frisbee_physics.pdf
 
-            float i = (float) (1/2 * Disc.m * Math.Pow((Disc.diameter/2), 2));
-            rigidBody.AddRelativeTorque(new Vector3(rigidBody.angularVelocity.x , rigidBody.angularVelocity.y , rigidBody.angularVelocity.z ) * i);
+        // Shouldn't lift force be dependent on disc pitch rotation? If you throw roller?
         
+        // Calculate lift and gravity
+        double cl = Disc.CL0 + Disc.CLA *alpha *Math.PI / 180;
+        double lift = RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cl /2 /  Disc.m ;
+        // apply force - acceleration
+        rigidBody.AddForce(0, (float) lift, 0, ForceMode.Acceleration);
+    }
+
+    private void Gravity_physics(){
+        // Gravity physics - Earth gravity to disc 
+
+        // apply force
+         rigidBody.AddForce(0, (float) GRAVITY, 0, ForceMode.Acceleration);
+    }
+
+    private void Drag_physics(){
+        // Drag physics - Air drag force to disc - Disc velocity resistance
+        // Inspiration source: http://scripts.mit.edu/~womens-ult/frisbee_physics.pdf
+
+        // Calculate drag
+        double cd = Disc.CD0 + Disc.CDA * Mathf.Pow((float)((alpha - Disc.ALPHA0)*Math.PI / 180),2);
+        double delta_drag = RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cd ;
+        // apply force
+        rigidBody.AddForce(-rigidBody.velocity.normalized * (float)delta_drag, ForceMode.Force);
+    }
+    private void Gyroscope_physics(){
+        // Gyroscope physics - Angular velocity drag 
+        // Inspiration source: https://scholarworks.moreheadstate.edu/cgi/viewcontent.cgi?article=1082&context=student_scholarship_posters
+        
+        // Is gyroscope physics rotation same as rotation velocity drag? 
+
+        // inertia of disc
+        double i = (1/2 *  Disc.m * Math.Pow((Disc.diameter/2), 2)); // i becomes too small for float, i = 0
+        // apply physic
+        rigidBody.AddRelativeTorque(new Vector3(rigidBody.angularVelocity.x , rigidBody.angularVelocity.y , rigidBody.angularVelocity.z ) * (float) i,ForceMode.VelocityChange);   
     }
 
     private void Aerodynamic_physics(){
+        // Aerodynamic physics - disc rotations in all direction dependent on disc rotation and speed
+        // Inspiration source: https://morleyfielddgc.files.wordpress.com/2009/04/hummelthesis.pdf (see image page 17)
+
         //z = Roll - p
         float crr = 0.014f;
         float crp = -0.0055f;
@@ -189,20 +232,18 @@ public class Disc_Movement : MonoBehaviour
         float CM0 = -0.08f;
         float CMA = 0.43f;
         float CMq = - 0.005f;
-         temp = (CM0 + CMA*transform.eulerAngles.x + CMq*rigidBody.angularVelocity.x);
+         temp = (float)(CM0 + CMA*alpha*Math.PI / 180  + CMq*rigidBody.angularVelocity.x);
         double M =temp * 1/2 * RHO * Math.Pow(rigidBody.velocity.magnitude,2) * Disc.AREA * Disc.diameter;
-
         //y = spin down - r
         float CNR = -0.000034f;
         double N = (CNR*rigidBody.angularVelocity.y) * 1/2 * RHO * Math.Pow(rigidBody.velocity.magnitude,2) * Disc.AREA * Disc.diameter;
         
+        // apply force
+        rigidBody.AddRelativeTorque((float)R,(float)M,(float)N, ForceMode.Acceleration);
         
-
-        rigidBody.AddRelativeTorque((float)R,(float)M,(float)N);
-        
-        Debug.Log(R + " " + M + " " + N);
+      //  Debug.Log(R + " " + M + " " + N);
     }
-    
+
     /// Update related methods
     /// 
     /// 
@@ -211,18 +252,24 @@ public class Disc_Movement : MonoBehaviour
        
         if (isThrown)
         {
-           
+        
+        // realtime alpha angle
+          alpha = Vector3.Angle(rigidBody.velocity, new Vector3(1,0,0))*Mathf.Deg2Rad; 
+        
+            // physics
+            Lift_physics();
+            Gravity_physics();
+            Drag_physics();
+            Aerodynamic_physics();
+            Gyroscope_physics();
 
-               // flat flight physics
-                Lift_And_Gravity_physics();
-                Drag_physics();
-                Aerodynamic_physics();
+            // Questions:
+            // physics for movement when disc is pitch rotated? Move left or right. Fade and turn?
+            // how would a thumber work with current solution?
+            // how would collisions work with disc?
+            // do I need to add physics for wind?
 
             CheckLanding();
-            
-            // clamp speedlimit
-        //    if (rigidBody.velocity.magnitude > MAXSPEED)
-          //      rigidBody.velocity = rigidBody.velocity.normalized * MAXSPEED;
 
         } else
         
@@ -246,73 +293,34 @@ public class Disc_Movement : MonoBehaviour
     }
 
 
-    private void Lift_And_Gravity_physics(){
-        double deltavy = ( RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cl /2 /  Disc.m + GRAVITY)  ;
-        rigidBody.AddForce(0, (float) deltavy, 0, ForceMode.Acceleration);
-    }
-  
-    private void Drag_physics(){
-        delta_drag = RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cd ;
-        rigidBody.AddForce(-rigidBody.velocity.normalized * (float)delta_drag, ForceMode.Force);
-    }
     void CheckLanding()
     {
         if(rigidBody.velocity.x <= 0 && rigidBody.velocity.y <= 0 && rigidBody.velocity.z <= 0)
         {
             distance.text = Math.Round(Vector3.Distance(discInitialPosition, transform.position)).ToString();
-         //  delta_rotation_speed *= fast_loss;
         }
     }
  
-   
-    
-
-    
-  
     private void SetUpThrow()
     {
         // Added variables
         rot = 0;                                // reset rotation speed
         discInitialRotation = transform.rotation; // Get disc localrotation
-
-        // movement dependent on y rotation as radians
-      //  fade_x = (float)Math.Sin((transform.eulerAngles.y * Math.PI) / 180);
-      //  fade_z = (float)Math.Cos((transform.eulerAngles.y * Math.PI) / 180);
-       // fade_z_physics = (float)Math.Cos(Math.PI + (transform.eulerAngles.y * Math.PI) / 180);
-
-       
-        
-
-        // clear old lines
-        if (show_lines)
-        {
-            ClearLines();
-        }
-
-      //  fade_speed = standard_fade_speed + 2*Disc.FADE;
-        delta_rotation_speed = rotateSpeed * playerThrust; // rotation start
-      
-     
         MAXSPEED = (throw_speed / 10) + min_speed;   // set speed
-
-      //  turn_drag =  Disc.TURN * (MAXSPEED - min_speed)/10;
-
-        rigidBody.isKinematic = false;          // Add gravity to the disc
-
 
         force.z = power;                        // set up z-force
 
-        
         rigidBody.mass = Disc.m;        
         rigidBody.useGravity = false;
+        rigidBody.isKinematic = false;          // Add gravity to the disc
 
            // init
         cd = Disc.CD0 + Disc.CDA * Mathf.Pow((float)((-rigidBody.rotation.x - Disc.ALPHA0)*Math.PI / 180),2);
         cl = Disc.CL0 + Disc.CLA *-rigidBody.rotation.x *Math.PI / 180;
-      
-        Debug.Log(rigidBody.rotation.x);
-     
-        rigidBody.AddRelativeTorque(0,rotateSpeed,0);
+
+        rigidBody.maxAngularVelocity = 2000;
+        
+        rigidBody.AddRelativeTorque(0,rotateSpeed,0, ForceMode.VelocityChange);
        
       //  rigidBody.AddForce(transform.right * force.x); // Add force on X to the disc
       //  rigidBody.AddForce(transform.up * force.y); // Add force on Y to the disc

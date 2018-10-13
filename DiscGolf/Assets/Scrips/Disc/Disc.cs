@@ -42,8 +42,8 @@ public class Disc : MonoBehaviour {
 
     [Header("Shape")]
     
-        public float diameter; // in cm
-        public float weight; // in g
+        public float diameter = 0.21f; // in m
+        public float weight; // in kg
 
         public float rim_thickness; // 
         public float rim_height; //

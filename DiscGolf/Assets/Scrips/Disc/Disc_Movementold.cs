@@ -423,6 +423,17 @@ public class Disc_Movement_old : MonoBehaviour
         turn_drag /= smooth_delta_turn_loss;
 
     }
+
+       private void Lift_And_Gravity_physics(){
+        // Shouldn't lift force be dependent on disc pitch rotation?
+
+        // Calculate lift and gravity
+        double cl = Disc.CL0 + Disc.CLA *rigidBody.rotation.x *Math.PI / 180;
+        double deltavy = ( RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cl /2 /  Disc.m + GRAVITY)  ;
+        // apply force - acceleration
+        rigidBody.AddForce(0, (float) deltavy, 0, ForceMode.Acceleration);
+    }
+ 
     private void Stabelize()
     {
         // stabelise disc
