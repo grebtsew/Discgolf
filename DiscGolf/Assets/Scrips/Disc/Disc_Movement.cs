@@ -63,6 +63,8 @@ public class Disc_Movement : MonoBehaviour
     private float turn_drag;
     public float throw_speed = 100; // throw speed 0-150
     private float glide = 0;
+    private Vector3 init_force;
+    private Quaternion init_rotation;
     private float throw_arm_length = 5;
     private float throw_delta_acceleration = 0;
     private float throw_acceleration = 1.05f; // 5% acceleraton
@@ -181,10 +183,18 @@ public class Disc_Movement : MonoBehaviour
         // Lift physics - Lift the disc dependent on alpha angle and velocity - Disc height
         // Inspiration source : http://scripts.mit.edu/~womens-ult/frisbee_physics.pdf
 
-        // Shouldn't lift force be dependent on disc pitch rotation? If you throw roller?
+        // 1. Shouldn't lift force be dependent on disc pitch rotation? Example if disc is thrown at 90 degrees, it shouldn't float in the air?
+        // 1. Solution: add a 1-sin(v) to make disc get less lift when disc is at an turn/fade angle?
         
-        // Calculate lift and gravity
-        double cl = Disc.CL0 + Disc.CLA *alpha *Math.PI / 180;
+        // Formula:
+        // cl = cl0 + cla * (alpha - ALPHA0)
+        // L = RHO*v^2*AREA*cl/2/m
+        // Description:
+        // L = lift force, RHO = air density, v = velocity, cl = constant, 
+        // cl0 = zero behavior, cla = angle dependent behavior, ALPHA0 = zero alpha angle
+
+        // Calculate lift 
+        double cl = Disc.CL0 + Disc.CLA *alpha *Math.PI / 180; // lift constant
         double lift = RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cl /2 /  Disc.m ;
         // apply force - acceleration
         rigidBody.AddForce(0, (float) lift, 0, ForceMode.Acceleration);
@@ -201,40 +211,71 @@ public class Disc_Movement : MonoBehaviour
         // Drag physics - Air drag force to disc - Disc velocity resistance
         // Inspiration source: http://scripts.mit.edu/~womens-ult/frisbee_physics.pdf
 
+        // Formula:
+        // cd = cd0 + (cda * (alpha - ALPHA0))^2
+        // D = RHO*v^2*AREA*cd
+        // Description:
+        // D = drag force, RHO = density of air, v = velocity
+        // cd = constant, cd0 = zero behavior, cda = angle dependent
+
         // Calculate drag
         double cd = Disc.CD0 + Disc.CDA * Mathf.Pow((float)((alpha - Disc.ALPHA0)*Math.PI / 180),2);
-        double delta_drag = RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cd ;
+        double delta_drag = RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cd;
         // apply force
         rigidBody.AddForce(-rigidBody.velocity.normalized * (float)delta_drag, ForceMode.Force);
     }
-    private void Gyroscope_physics(){
-        // Gyroscope physics - Angular velocity drag 
+    private void Gyroscope_physics(){ // something wrong here!
+        // Gyroscope physics - Angular velocity effects
         // Inspiration source: https://scholarworks.moreheadstate.edu/cgi/viewcontent.cgi?article=1082&context=student_scholarship_posters
         
-        // Is gyroscope physics rotation same as rotation velocity drag? 
+        //2. The gyroscope physics should describe how the discs angular velocity effects the flight, so what should happen here?
+        
+        // Formula:
+        // I = 1/2*m*(d/2)^2
+        // H = I*w 
+        // Description:
+        // H = angular momentum, I = disc inertia, w = angular velocity
+        // m = mass, d = diameter
 
         // inertia of disc
-        double i = (1/2 *  Disc.m * Math.Pow((Disc.diameter/2), 2)); // i becomes too small for float, i = 0
-        // apply physic
-        rigidBody.AddRelativeTorque(new Vector3(rigidBody.angularVelocity.x , rigidBody.angularVelocity.y , rigidBody.angularVelocity.z ) * (float) i,ForceMode.VelocityChange);   
+        double i = (1/2 *  Disc.m * Math.Pow((Disc.diameter/2), 2)); // i becomes too small for float, i < 0.0001
+        // apply physic 
+      //  rigidBody.AddRelativeTorque(new Vector3(rigidBody.angularVelocity.x , rigidBody.angularVelocity.y , rigidBody.angularVelocity.z ) * (float) i,ForceMode.VelocityChange);   
     }
 
-    private void Aerodynamic_physics(){
+    private void Aerodynamic_physics(){ // something wrong here!
         // Aerodynamic physics - disc rotations in all direction dependent on disc rotation and speed
-        // Inspiration source: https://morleyfielddgc.files.wordpress.com/2009/04/hummelthesis.pdf (see image page 17)
+        // Inspiration source: https://morleyfielddgc.files.wordpress.com/2009/04/hummelthesis.pdf (see image page 17) (see formulas on page 23)
 
-        //z = Roll - p
+        //3. What are aerodynamic forces?
+        //3. Solution: The aerodynamic forces include drag and lift. The real question is what are the moments descibed below?
+        // Is this implementation perhaps correct but need some deltatime?
+
+        // ROLL
+        // d = diameter, RHO = density of air, v = velocity
+        // Crr, Crp = constants, z = Roll = p
+        // Formula:
+        // R = (Crr*r + Crp*p)*1/2*RHO*v^2*AREA*d
         float crr = 0.014f;
         float crp = -0.0055f;
         float temp = (crr*rigidBody.angularVelocity.y + crp*rigidBody.angularVelocity.z);
         double R = temp* 1/2 * RHO * Math.Pow(rigidBody.velocity.magnitude,2) * Disc.AREA * Disc.diameter;
-        //x = Pitch  - q
+        
+        // PITCH
+        // Cm0, Cma, Cmq = constants, x = Pitch  = q
+        // Formula:
+        // M = (CM0 + Cma*alpha + CMq*q)*1/2*RHO*v^2*AREA*d
         float CM0 = -0.08f;
         float CMA = 0.43f;
         float CMq = - 0.005f;
          temp = (float)(CM0 + CMA*alpha*Math.PI / 180  + CMq*rigidBody.angularVelocity.x);
         double M =temp * 1/2 * RHO * Math.Pow(rigidBody.velocity.magnitude,2) * Disc.AREA * Disc.diameter;
-        //y = spin down - r
+       
+        // SPIN DOWN
+        // y = spin down = r
+        // angular velocity drag
+        // Formula:
+        // N = (CNR*r)*1/2*RHO*v^2*AREA*d
         float CNR = -0.000034f;
         double N = (CNR*rigidBody.angularVelocity.y) * 1/2 * RHO * Math.Pow(rigidBody.velocity.magnitude,2) * Disc.AREA * Disc.diameter;
         
@@ -244,12 +285,44 @@ public class Disc_Movement : MonoBehaviour
       //  Debug.Log(R + " " + M + " " + N);
     }
 
+    void calculate_flight(Vector3 init_force, Transform init_transform){
+        LineRenderer line = GetComponent<LineRenderer>();
+        bool hit_ground = false;
+        List<Vector3> positions = new List<Vector3>();
+        Vector3 curr_pos = init_transform.position;
+        int index = 0;
+        Vector3 curr_force = init_force;
+
+        // add first
+        positions.Add(curr_pos);
+
+        while (! hit_ground){
+           // gravity and lift
+            double cl = Disc.CL0 + Disc.CLA *alpha *Math.PI / 180;
+            double ydelta = RHO * Math.Pow(curr_force.magnitude, 2) * Disc.AREA * cl /2 /  Disc.m  + GRAVITY;
+            
+          // drag
+            double cd = Disc.CD0 + Disc.CDA * Mathf.Pow((float)((alpha - Disc.ALPHA0)*Math.PI / 180),2);
+            double xdelta = RHO * Math.Pow(curr_force.magnitude, 2) * Disc.AREA * cd;
+
+            curr_pos = new Vector3(curr_force.x + (float) xdelta, curr_force.y +(float) ydelta, curr_force.z);
+
+            positions.Add(curr_pos);
+
+            if(curr_pos.y < 0) {
+                hit_ground = true;
+            }    
+            index++;
+
+        }
+    }
+
     /// Update related methods
     /// 
     /// 
     void Update()
     {
-       
+
         if (isThrown)
         {
         
@@ -264,14 +337,27 @@ public class Disc_Movement : MonoBehaviour
             Gyroscope_physics();
 
             // Questions:
-            // physics for movement when disc is pitch rotated? Move left or right. Fade and turn?
-            // how would a thumber work with current solution?
-            // how would collisions work with disc?
-            // do I need to add physics for wind?
+            // 4. Physics for movement when disc is pitch rotated are not implemented yet? Move left or right. Fade and turn. Is that gyroscope physics work?
+            // 5. How would a thumber work with current solution? (see thumber throw on youtube) Disc rotates in air and when the disc is stabilized it acts as normal.
+            // 6. How would collisions work with disc? Specifically how does collision behave during rolling on angular velocity drag? My hopes are that unity solves this for me.
+            // 7. How would collisions work with disc? Why do some discs "skip" further then others? My thought is angle of attack combined with materials and wind? Hopefully unity solves this for me too.
+            // 8. we are using a drag/lift constant for disc at certain angle. Is that an accurate solution? 
+            // 9. Should we calculate disc visible area (planform) dependent on angle?
+            // 10. What does a damaged disc effect? I think disc wear have negligible effect on drag but effect on disc stability. The disc becomes less stable?
+            // 11. What is Reynolds numbers? Are they already included in (this code) the constants cd and cl?
+            // 12. Is this generally a viable solution?
+            // 13. My plan is to add wind fields in unity engine that should work as a accurate wind. Do you think that is a good solution?
 
+            // draw predicted line
+            // add wind force
             CheckLanding();
 
-        } else
+        } else {
+            
+     if(show_lines){
+        init_force = transform.forward * power;
+         calculate_flight(init_force, transform);
+     }
         
          if (throw_animation)
         {
@@ -290,7 +376,9 @@ public class Disc_Movement : MonoBehaviour
                 throw_animation = false;
             }
         }
+    
     }
+}
 
 
     void CheckLanding()
