@@ -196,7 +196,7 @@ if __name__ == "__main__":
     vy0 = 0 # m/s y axis
     vz0 = 0 # m/s in z axis
     rot0 = math.pi # rotation radian per second
-    alpha = 10 # alpha angle degrees (z axis)
+    alpha = 7.5 # alpha angle degrees (z axis)
     beta = 0  # beta angle degrees
     deltaT = 0.1 # number of calculation intervalls
 

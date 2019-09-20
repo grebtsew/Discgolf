@@ -86,7 +86,7 @@ if __name__ == "__main__":
     y0 = 1 # 1 m above ground
     vx0 = 14 # 20 m/s x axis
     vy0 = 0 # 10 m/s y axis
-    alpha = 8 # alpha angle degrees
+    alpha = 7.5 # alpha angle degrees
     deltaT = 0.1 # number of calculation intervalls
 
     simulate(y0, vx0, vy0, alpha, deltaT)
