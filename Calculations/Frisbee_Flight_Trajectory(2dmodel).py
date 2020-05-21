@@ -59,7 +59,7 @@ def simulate(y0, vx0, vy0, alpha, deltaT):
         #Thechangeinvelocityintheydirectionobtainedsettingthe//netforceequaltothesumofthegravitationalforceandthe//liftforceandsolvingfordeltav.double
         deltavy=(RHO*pow(vx,2)*above_AREA*cl/2/m+g)*deltaT
         #Thechangeinvelocityinthexdirection,obtainedby//solvingtheforceequationfordeltav.(Theonlyforce//presentisthedragforce).double
-        deltavx=-RHO*pow(vx,2)*above_AREA*cd*deltaT;
+        deltavx=-RHO*pow(vx,2)*above_AREA*cd*deltaT
 
         vx=vx+deltavx
         vy=vy+deltavy
@@ -84,9 +84,9 @@ def simulate(y0, vx0, vy0, alpha, deltaT):
 
 if __name__ == "__main__":
     y0 = 1 # 1 m above ground
-    vx0 = 14 # 20 m/s x axis
-    vy0 = 0 # 10 m/s y axis
-    alpha = 7.5 # alpha angle degrees
+    vx0 = 20 # 20 m/s x axis
+    vy0 = 50 # 10 m/s y axis
+    alpha = 10 # alpha angle degrees
     deltaT = 0.1 # number of calculation intervalls
 
     simulate(y0, vx0, vy0, alpha, deltaT)

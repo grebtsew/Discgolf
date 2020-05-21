@@ -1,11 +1,10 @@
 import matplotlib.pyplot as plt
 import math
 
-
 """
 Termology explained:
 
-    x - axis are forward/backward
+    x - axis are forward
     y - axis are height
     z - axis are sides
 
