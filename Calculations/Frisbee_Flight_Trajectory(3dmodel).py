@@ -31,6 +31,11 @@ class Vector():
         return (self.x,self.y,self.z)
     def mag(self):
         return math.sqrt(self.x**2+self.y**2+self.z**2)
+    def norm(self):
+        return Vector(self.x/self.mag(), self.y/self.mag(), self.z/self.mag())
+
+def dot(v1,v2):
+    return v1.x*v2.x+v1.y*v2.y+v1.z*v2.z
 
 class Frisbee():
     # Frisbee specifics
@@ -49,10 +54,8 @@ class Frisbee():
 
     ALPHA0 = -4
 
-    Iz = 0.00122
-    Ix = 0.00122
-    Iy = 0.00235
-
+    I = Vector(0.00122, 0.00122, 0.00235)
+    
     # AREAs
     above_AREA = math.pi * pow(R, 2)
     side_AREA = R*2*Center_Height
@@ -74,28 +77,23 @@ f = Frisbee() # frisbee reference
 Physics functions
 """
 
-def x_axis_velocity(r, v):
-    # Calculate the drag coefficient for prantls relationship
-    #cd = CD0 + CDA *pow((alpha -ALPHA0)*math.pi/180, 2)
-    cd = f.CD0 + f.CDA *pow((r.z -f.ALPHA0)*math.pi/180, 2)
-    # The change invelocity in the x direction , obtained by solving
-    # the force equation for deltav. ( The only force present is the drag force)
-    #deltavx=-RHO*pow(vx,2)*above_AREA*cd*deltaT
-    return -RHO*pow(v.x,2)*f.side_AREA*cd*deltaT
+def lift(r,v):
+    alpha = math.acos(dot(v.norm(),r.norm()) )
+    cl = f.CL0 + f.CLA * math.radians(alpha)
 
-def y_axis_velocity(r, v):
-    # Calculation of the lift coefficient using the relationship given by S.A.Hummel.
-    #cl = CL0 + CLA *alpha *math.pi/180
-    cl = f.CL0 + f.CLA *r.z *math.pi/180
-    # The change in velocity in the y direction obtained
-    # setting the  net force equal to the sum of the gravitational force and the lift force and solving for deltav
-    #deltavy=(RHO*pow(vx,2)*above_AREA*cl/2/m+g)*deltaT
-    return (RHO*pow(v.x,2)*f.above_AREA*cl/2/f.m+g)*deltaT
+    lift = ((RHO*pow(v.mag(),2)*f.above_AREA*cl)/2/f.m+g)*deltaT
+    new_velocity= Vector(- math.sin(r.z)*lift , -lift*((1- math.sin(r.z) + (1-math.sin(r.x))))/2, -math.sin(r.x)*lift )
+    return new_velocity
 
-def z_axis_velocity(r, v):
-    # Same as y axis but sin(x) dependent
-    cl = f.CL0 + f.CLA *r.z*math.pi/180
-    return 0#(RHO*pow(v.mag(),2)*f.above_AREA*cl/2/f.m)*deltaT
+def drag(r, v):
+    vn = v.norm()
+    alpha = math.acos(dot(vn,r.norm()))
+    cd = f.CD0 + f.CDA *pow(alpha - math.radians(f.ALPHA0), 2)
+    drag = (RHO*pow(v.mag(),2)*f.above_AREA*cd* 1/2)*deltaT
+    
+    new_velocity = Vector(- abs(vn.x)*drag,- abs(vn.y)*drag,- abs(vn.z)*drag)
+
+    return new_velocity 
 
 def x_axis_rot(w, v):
     """
@@ -104,21 +102,19 @@ def x_axis_rot(w, v):
     Formula:
     R = (Crr*r + Crp*p)*1/2*RHO*v^2*AREA*2*R
     """
-    roll = (f.CRR*w.y+ f.CRP*w.x)* 1/2 * RHO * pow(v.z,2) * f.above_AREA * 2*f.R
-
-    #roll = (crr*yrot*math.pi / 180 + crp*xrot*math.pi / 180)* 1/2 * RHO * pow(vx,2) * above_AREA * 2*R
+    roll = (f.CRR*w.y+ f.CRP*w.x)* 1/2 * RHO * pow(v.mag(),2) * f.above_AREA * 2*f.R
     return roll*deltaT
 
 def y_axis_rot(w, v):
     """
+
     SPIN DOWN (might be negligible)
     y = spin down = r
     angular velocity drag
     Formula:
     N = (CNR*r)*1/2*RHO*v^2*AREA*d
     """
-    spin = (f.CNR*w.y) * 1/2 * RHO * pow(v.z,2) * f.above_AREA * 2*f.R
-    #spin = (CNR*yrot*math.pi / 180) * 1/2 * RHO * pow(vx,2) * above_AREA * 2*R
+    spin = (f.CNR*w.y) * 1/2 * RHO * pow(v.mag(),2) * f.above_AREA *f.R*2
     return spin*deltaT
 
 
@@ -129,8 +125,8 @@ def z_axis_rot(w, r, v):
     Formula:
     M = (CM0 + Cma*alpha + CMq*q)*1/2*RHO*v^2*AREA*d
     """
-    pitch =(f.CM0 + f.CMA*(r.z)  + f.CMq* w.z) * 1/2 * RHO * pow(v.z,2) * f.above_AREA * 2*f.R
-    #pitch =(CM0 + CMA*(-CL0/CLA)*math.pi / 180  + CMq* zrot*math.pi / 180) * 1/2 * RHO * pow(vx,2) * above_AREA * 2*R
+    alpha = math.acos(dot(v.norm(),r.norm()) )
+    pitch =(f.CM0 + f.CMA*math.radians(alpha)  + f.CMq* w.z) * 1/2 * RHO * pow(v.mag(),2) * f.above_AREA * 2*f.R
     return pitch*deltaT
 
 def simulate(p, v, r, w, deltaT):
@@ -160,27 +156,37 @@ def simulate(p, v, r, w, deltaT):
     vz_values = []
     counter = 0
     data = [["Position [m]","Velocity [m/s]","Rotation [Degree]","Angular Velocity [rad/s]"]]
+    
+    # Angular momentum
+    L = Vector(0,0,0)
+
     while (p.y > 0):
 
-        #w.x = y_axis_rot(w, v)#*deltaT # spin
-        #w.y = x_axis_rot(w, v)#*deltaT # roll
-        #w.z = z_axis_rot(w, r, v)#*deltaT # pitch
+        # Get Angular Moments from article
+        L.x = x_axis_rot(w, v) # spin
+        L.y = y_axis_rot(w, v) # roll
+        L.z = z_axis_rot(w, r, v) # pitch
 
-        #r.x += w.x*deltaT
-        #r.y += w.y*deltaT
-        #r.z += w.z*deltaT
+        # Get Angular Velocities L = wI -> w = L/I
+        w.x = L.x/f.I.x
+        w.y = L.y/f.I.y
+        w.z = L.z/f.I.z
 
-        #ax = x_axis_velocity(r, v)
-        #ay = y_axis_velocity(r, v)
-        #az = z_axis_velocity(r, v)
-        # Position change
-        v.x+= ax
-        v.y+= ay
-        #v.z+= az
+        # Get Angles
+        r.x += w.x
+        r.y += w.y
+        r.z += w.z
 
+        # Get Velocity
+        dD = drag(r,v)
+        dL = lift(r,v)
+        
+        v = Vector(v.x + dD.x + dL.x, v.y + dD.y + dL.y, v.z +dD.z + dL.z)
+
+        # Get position
         p.x+=v.x*deltaT
         p.y+=v.y*deltaT
-        #p.z+=v.z*deltaT
+        p.z+=v.z*deltaT
 
         if (counter % 4 == 0): # skip some values to speed things up
             x_values.append(p.x)
@@ -244,7 +250,6 @@ def plot_graphs(x_values, y_values, z_values, vz_values, vx_values,rx_values, ry
     axs[4].set_ylabel('X distance [m]')
     axs[4].plot(x_values, rz_values, '-b', label= "rz")
 
-
     axs[0].legend(loc="upper right")
     axs[1].legend(loc="upper right")
     axs[2].legend(loc="upper right")
@@ -255,10 +260,10 @@ def plot_graphs(x_values, y_values, z_values, vz_values, vx_values,rx_values, ry
     plt.show()
 
 if __name__ == "__main__":
-    position_vector = Vector(0,1,0) # [m]
+    position_vector = Vector(0,10,0) # [m]
     velocity_vector = Vector(30,0,0) # [m/s]
-    rotation_vector = Vector(0,0,10) # [Degrees celsius]
-    rotational_speed_vector = Vector(0,50,0) # [radians per second] roll,spin,pitch
-    deltaT = 0.1 # time intervall
+    rotation_vector = Vector(0,0,math.pi/12) # [radians]
+    rotational_speed_vector = Vector(0,10*math.pi,0) # [radians per second] roll,spin,pitch
+    deltaT = 0.01 # time intervall
 
     simulate(position_vector, velocity_vector, rotation_vector, rotational_speed_vector, deltaT)
