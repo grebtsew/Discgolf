@@ -58,9 +58,13 @@ class Frisbee():
 
     I = Vector(0.00122, 0.00122, 0.00235)
     
+
+
     # AREAs
     above_AREA = math.pi * pow(R, 2)
-    side_AREA = R*2*Center_Height
+    #side_AREA = R*2*Center_Height
+    #print("Above Area", above_AREA)
+    #print("Side Area", side_AREA)
 
     # Rotational parameters
     CRR = 0.014
@@ -176,7 +180,6 @@ def simulate(p, v, r, w, deltaT):
         w.y = L.y/f.I.y
         w.z = L.z/f.I.z
 
-
         # Get Angles
         r.x += w.x*deltaT
         r.y += w.y*deltaT
@@ -189,9 +192,9 @@ def simulate(p, v, r, w, deltaT):
         v = Vector(v.x + dD.x + dL.x, v.y + dD.y + dL.y, v.z +dD.z + dL.z)
 
         # Get position
-        p.x+=v.x*deltaT
-        p.y+=v.y*deltaT
-        p.z+=v.z*deltaT
+        p.x+=v.x*deltaT/f.m
+        p.y+=v.y*deltaT/f.m
+        p.z+=v.z*deltaT/f.m
 
         if (counter % 4 == 0): # skip some values to speed things up
             x_values.append(p.x)
@@ -266,9 +269,9 @@ def plot_graphs(x_values, y_values, z_values, vz_values, vx_values,rx_values, ry
 
 if __name__ == "__main__":
     position_vector = Vector(0,1,0) # [m]
-    velocity_vector = Vector(30,0,0) # [m/s]
+    velocity_vector = Vector(40,0,0) # [m/s]
     rotation_vector = Vector(0,0,0) # [radians]
-    rotational_speed_vector = Vector(0,0,0) # [radians per second] roll,spin,pitch
+    rotational_speed_vector = Vector(0,50,0) # [radians per second] roll,spin,pitch
     deltaT = 0.01 # time intervall
 
     simulate(position_vector, velocity_vector, rotation_vector, rotational_speed_vector, deltaT)
