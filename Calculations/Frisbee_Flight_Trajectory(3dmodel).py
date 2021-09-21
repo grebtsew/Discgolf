@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import math
 import numpy as np
+
 """
 Termology explained:
 
@@ -17,9 +18,9 @@ Termology explained:
                  -
 
 Main sources:
-http://scripts.mit.edu/~womens-ult/frisbee_physics.pdf (good article about python 2dmodels, see script in the end of article)
-https://scholarworks.moreheadstate.edu/cgi/viewcontent.cgi?article=1082&context=student_scholarship_posters
-https://morleyfielddgc.files.wordpress.com/2009/04/hummelthesis.pdf (good article about 3dmodels, see figures on page 33 and 35!)
+[1] http://scripts.mit.edu/~womens-ult/frisbee_physics.pdf (good article about python 2dmodels, see script in the end of article)
+[2] https://scholarworks.moreheadstate.edu/cgi/viewcontent.cgi?article=1082&context=student_scholarship_posters
+[3] https://morleyfielddgc.files.wordpress.com/2009/04/hummelthesis.pdf (good article about 3dmodels, see figures on page 33 and 35!)
 """
 
 class Vector():
@@ -43,28 +44,28 @@ class Frisbee():
     # Frisbee specifics
     m = 0.175 # in kg
     R = 0.1085 # radie in m
+
     # See these on discsport.se
     Rim_Thickness = 0.012
     Rim_depth = 0.013
     Center_Height = 0.019 # max height
-    # Disc specifics
+
+    # Inertia
+    I = Vector(0.00122, 0.00122, 0.00235)
+    
+    # Area
+    above_AREA = math.pi * pow(R, 2)
+    side_AREA = R*2*Center_Height
+
+    # Disc specifics [3]
+    # Pitch angle at completely straight flight
+    ALPHA0 = -4
+
     CL0 = 0.33 #The lift coefficient at alpha=0.
     CLA = 1.91 #The lift coefficient dependent on alpha
 
     CD0 = 0.18 #The drag coefficient at alpha = 0
     CDA = 0.69 #The drag coefficient dependent on alpha
-
-    ALPHA0 = -4
-
-    I = Vector(0.00122, 0.00122, 0.00235)
-    
-
-
-    # AREAs
-    above_AREA = math.pi * pow(R, 2)
-    #side_AREA = R*2*Center_Height
-    #print("Above Area", above_AREA)
-    #print("Side Area", side_AREA)
 
     # Rotational parameters
     CRR = 0.014
@@ -72,7 +73,7 @@ class Frisbee():
     CNR = -0.0000071
     CM0 = -0.08
     CMA = 0.43
-    CMq = - 0.005
+    CMq = -0.005
 
 # Global Variables!
 g = -9.81 # gravity
@@ -84,9 +85,12 @@ Physics functions
 """
 
 def lift(r,v):
+    """
+    Calculate lift from angles and velocity.
+    Then apply to velocity vector.
+    """
     alpha = math.acos(dot(v.norm(),r.norm()) )
     cl = f.CL0 + f.CLA * math.radians(alpha)
-
     lift = ((RHO*pow(v.mag(),2)*f.above_AREA*cl)/2/f.m+g)*deltaT
 
     new_velocity= Vector( math.sin(r.z)*lift , lift*((1- math.sin(r.z) + (1-math.sin(r.x))))/2, math.sin(r.x)*lift )
@@ -94,11 +98,14 @@ def lift(r,v):
     return new_velocity
 
 def drag(r, v):
+    """
+    Calculate drag from angles and velocity.
+    Then apply to velocity vector.
+    """
     vn = v.norm()
     alpha = math.acos(dot(vn,r.norm()))
     cd = f.CD0 + f.CDA *pow(alpha - math.radians(f.ALPHA0), 2)
     drag = (RHO*pow(v.mag(),2)*f.above_AREA*cd* 1/2)*deltaT
-    
     new_velocity = Vector(- abs(vn.x)*drag,- abs(vn.y)*drag,- abs(vn.z)*drag)
 
     return new_velocity 
@@ -106,7 +113,8 @@ def drag(r, v):
 def x_axis_rot(w, v):
     """
     ROLL
-    Crr, Crp = constants, z = Roll = p
+    x = Roll = vx
+    Crr, Crp = constants
     Formula:
     R = (Crr*r + Crp*p)*1/2*RHO*v^2*AREA*2*R
     """
@@ -115,8 +123,7 @@ def x_axis_rot(w, v):
 
 def y_axis_rot(w, v):
     """
-
-    SPIN DOWN (might be negligible)
+    SPIN DOWN (might be almost negligible in some cases)
     y = spin down = r
     angular velocity drag
     Formula:
@@ -129,7 +136,8 @@ def y_axis_rot(w, v):
 def z_axis_rot(w, r, v):
     """
     PITCH
-    Cm0, Cma, Cmq = constants, x = Pitch = vx
+    z = Pitch = p
+    Cm0, Cma, Cmq = constants
     Formula:
     M = (CM0 + Cma*alpha + CMq*q)*1/2*RHO*v^2*AREA*d
     """
@@ -170,10 +178,10 @@ def simulate(p, v, r, w, deltaT):
 
     while (p.y > 0):
 
-        # Get Angular Moments from article
-        L.x = x_axis_rot(w, v) # spin
-        L.y = y_axis_rot(w, v) # roll
-        L.z = z_axis_rot(w, r, v) # pitch
+        # Get Angular Moments from [3]
+        L.x = x_axis_rot(w, v) 
+        L.y = y_axis_rot(w, v) 
+        L.z = z_axis_rot(w, r, v)
 
         # Get Angular Velocities L = wI -> w = L/I
         w.x = L.x/f.I.x
