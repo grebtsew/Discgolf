@@ -7,3 +7,5 @@
 * fix real world maps
 * create demo video
 * update readme
+* split sounds into several
+* optimize game size
