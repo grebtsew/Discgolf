@@ -10,4 +10,4 @@ The game is created in Unity C#
 4. Create small demo version
 
 
-![Screenshot](screenshot.png)
+![Screenshot](Images/screenshot.png)
