@@ -1,5 +1,0 @@
-sceneSetups:
-- path: Assets/Scenes/Test_Maps/Test_Disc_Map.unity
-  isLoaded: 1
-  isActive: 1
-  isSubScene: 0
