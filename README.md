@@ -20,3 +20,11 @@ The game is created in Unity C#
 * https://www.youtube.com/watch?v=luRYGovsvYQ
 * https://www.youtube.com/watch?v=xNN7iTA57jM
 * https://www.youtube.com/watch?v=Ta8KP0HHgZc
+
+
+# Assets
+
+* Nature Starter Kit 2
+* Mezanix
+* In-game Debug Console
+* Quantum UI - GUI Tools
