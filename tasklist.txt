@@ -1,10 +1,8 @@
-* blender disc mapping
-* update gitignore and reapply
 * fix gui
 * fix physics 
 * create meny
 * add music
+* fix trajectory
 * fix basket
 * fix real world maps
 * create demo video
-* dogocam
