@@ -79,8 +79,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-.vscode/*
+/DiscGolf/.vs
+/DiscGolf/.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
