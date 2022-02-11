@@ -318,7 +318,7 @@ public class Disc_Movement : MonoBehaviour
         Vector3 trans_rot =rigidBody.velocity;
 
         alpha=Mathf.Asin( Vector3.Cross(temp, trans_rot).sqrMagnitude / (temp.sqrMagnitude+trans_rot.sqrMagnitude));
-       Debug.Log(alpha*Mathf.Rad2Deg);
+      // Debug.Log(alpha*Mathf.Rad2Deg);
       //   Debug.Log(rigidBody.);
 
          // calculate relative pitch angle x

@@ -95,7 +95,7 @@ public class follow_camera : MonoBehaviour
 
         }
 
-        mode_label.text = mode.ToString();
+        //mode_label.text = mode.ToString();
 
 
         buttonaction();
