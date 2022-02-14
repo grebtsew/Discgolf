@@ -31,18 +31,21 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
     }
 
     public void OnEndDrag(PointerEventData eventData){
+        // TODO: this doesnt seem to work ?
         // move back if out of screen
             #if UNITY_EDITOR
-        if (Input.mousePosition.x < 0 || Input.mousePosition.y < 0 || Input.mousePosition.x >= Handles.GetMainGameViewSize().x - 1 || Input.mousePosition.y >= Handles.GetMainGameViewSize().y - 1) 
+        if (Input.mousePosition.x <= 0 || Input.mousePosition.y <= 0  || Input.mousePosition.x >= Handles.GetMainGameViewSize().x - 1 || Input.mousePosition.y >= Handles.GetMainGameViewSize().y - 1) 
     {
     dragRectTransform.anchoredPosition = org_pos.anchoredPosition;
     }
     #else
-        if (Input.mousePosition.x < 0 || Input.mousePosition.y < 0 || Input.mousePosition.x >= Screen.width - 1 || Input.mousePosition.y >= Screen.height - 1) {
+        if (Input.mousePosition.x <= 0 || Input.mousePosition.y <= 0 || Input.mousePosition.x >= Screen.width - 1 || Input.mousePosition.y >= Screen.height - 1) {
             dragRectTransform.anchoredPosition = org_pos.anchoredPosition;
         }
     #endif
 
+    //Debug.Log(Input.mousePosition.x);
+     // Debug.Log(Input.mousePosition.y);
     }
 
     public void OnPointerDown(PointerEventData eventData){

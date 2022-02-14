@@ -12,7 +12,6 @@ public class canvas_controller : MonoBehaviour
     public Slider x_pos;
     public Slider y_pos;
     public Slider z_pos;
-    public Slider power;
     public Slider spin;
     public Slider speed;
 
@@ -50,10 +49,6 @@ public class canvas_controller : MonoBehaviour
     public void updateSpeed()
     {
         frisbee.SetSpeed(speed.value);
-    }
-    public void updatePower()
-    {
-        frisbee.SetPower(power.value);
     }
     public void updateRotation()
     {
