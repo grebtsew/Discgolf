@@ -13,7 +13,7 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
 
     private RectTransform org_pos;
     void Start(){
-        org_pos.anchoredPosition = dragRectTransform.anchoredPosition;
+        org_pos = dragRectTransform;
     }
  
     /// <summary>

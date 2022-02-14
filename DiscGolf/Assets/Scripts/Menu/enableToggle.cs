@@ -10,13 +10,17 @@ public class enableToggle : MonoBehaviour
  {
       
       gameObject.SetActive( false ) ;
+      if (extraEnable){
       extraEnable.SetActive(true);
+      }
  }
 
  public void EnableGameObject()
  {
       gameObject.SetActive( true ) ;
+      if(extraEnable){
       extraEnable.SetActive(true);
+      }
  }
 
  public void toggle()

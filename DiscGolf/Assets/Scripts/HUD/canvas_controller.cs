@@ -26,7 +26,7 @@ public class canvas_controller : MonoBehaviour
 
         // set spinner start value
         spin.value = frisbee.rotateSpeed;
-        power.value = frisbee.power;
+        //power.value = frisbee.power;
         speed.value = frisbee.throw_speed;
     }
 
