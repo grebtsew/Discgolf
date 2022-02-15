@@ -7,7 +7,7 @@ public class follow_camera : MonoBehaviour
 {
     private Vector3 offset;
     private Vector3 stand_offset;
-    private Disc_Movement frisbee;
+    private SimulatorUIhelper frisbee;
     public camera_mode mode = camera_mode.throw_mode;
     public Text mode_label;
     private List<Transform> targets = new List<Transform>();
@@ -20,7 +20,7 @@ public class follow_camera : MonoBehaviour
 
     void Start()
     {
-        frisbee = FindObjectOfType<Disc_Movement>();
+        frisbee = FindObjectOfType<SimulatorUIhelper>();
         stand_offset = transform.position - frisbee.transform.position;
 
         target = frisbee.GetComponent<Transform>();
@@ -33,16 +33,14 @@ public class follow_camera : MonoBehaviour
         }
     }
 
-    /// Change Camera
-    /// 
-    /// 
+ 
     public void toggle_follow()
     {
         switch (mode)
         {
             case camera_mode.throw_mode:
                 transform.position = frisbee.transform.position + stand_offset;
-                if (frisbee.isThrown)
+                if (frisbee.isThrown())
                 {
                     mode = camera_mode.follow_frisbee;
                 }
@@ -50,12 +48,7 @@ public class follow_camera : MonoBehaviour
             case camera_mode.free_camera:
                 mode = camera_mode.throw_mode;
                 break;
-            case camera_mode.follow_frisbee:
-                mode = camera_mode.stuck_camera;
-                break;
-            case camera_mode.stuck_camera:
-                mode = camera_mode.free_camera;
-                break;
+          
         }
     }
     public void updatePosition()
@@ -68,7 +61,7 @@ public class follow_camera : MonoBehaviour
         switch (mode)
         {
             case camera_mode.throw_mode:
-                if (frisbee.isThrown)
+                if (frisbee.isThrown())
                 {
                     offset = transform.position - frisbee.transform.position;
                     mode = camera_mode.follow_frisbee;
@@ -81,7 +74,7 @@ public class follow_camera : MonoBehaviour
                 }
                 break;
             case camera_mode.stuck_camera:
-                transform.position = frisbee.discInitialPosition + stand_offset;
+                transform.position = frisbee.getInitialPosition() + stand_offset;
                 transform.LookAt(frisbee.transform);
                 break;
             case camera_mode.free_camera:
@@ -89,7 +82,7 @@ public class follow_camera : MonoBehaviour
                 transform.LookAt(target);
                 break;
             case camera_mode.follow_frisbee:
-                transform.position = frisbee.transform.position + offset;
+                transform.position = frisbee.getInitialPosition() + offset;
                 transform.LookAt(frisbee.transform);
                 break;
 

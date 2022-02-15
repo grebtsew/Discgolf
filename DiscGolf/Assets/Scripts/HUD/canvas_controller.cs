@@ -15,18 +15,19 @@ public class canvas_controller : MonoBehaviour
     public Slider spin;
     public Slider speed;
 
-    private Disc_Movement frisbee;
+    private SimulatorUIhelper frisbee;
     private Vector3 startpos;
+    private Rigidbody rigidBody;
 
     void Start()
     {
-        frisbee = FindObjectOfType<Disc_Movement>();
+        frisbee = FindObjectOfType<SimulatorUIhelper>();
         startpos = frisbee.transform.position;
-
+        rigidBody = frisbee.getRigidbody();
         // set spinner start value
-        spin.value = frisbee.rotateSpeed;
+        spin.value = frisbee.getSpin();
         //power.value = frisbee.power;
-        speed.value = frisbee.throw_speed;
+        speed.value = frisbee.getSpeed();
     }
 
     /// publicly used methods
@@ -34,7 +35,6 @@ public class canvas_controller : MonoBehaviour
     /// 
     public void resetSliders()
     {
-      
       x_rot.value = 0;
       y_rot.value = 0;
       z_rot.value = 0;
@@ -44,7 +44,7 @@ public class canvas_controller : MonoBehaviour
 }
     public void updateSpin()
     {
-        frisbee.SetRotSpeed(spin.value);
+        frisbee.SetSpin(spin.value);
     }
     public void updateSpeed()
     {
@@ -52,14 +52,13 @@ public class canvas_controller : MonoBehaviour
     }
     public void updateRotation()
     {
-    
-        frisbee.rigidBody.MoveRotation(Quaternion.Euler(x_rot.value, y_rot.value + 90, z_rot.value));
+        rigidBody.MoveRotation(Quaternion.Euler(x_rot.value, y_rot.value+90 , z_rot.value));
  
     }
     public void updateposition()
     {
-        if (frisbee.at_tee) { 
-        frisbee.rigidBody.position = new Vector3(startpos.x + x_pos.value, startpos.y + y_pos.value, startpos.z + z_pos.value);
+        if (frisbee.isAtTee()) { 
+        rigidBody.position = new Vector3(startpos.x + x_pos.value, startpos.y + y_pos.value, startpos.z + z_pos.value);
         }
     }
     public void updateStartpos()

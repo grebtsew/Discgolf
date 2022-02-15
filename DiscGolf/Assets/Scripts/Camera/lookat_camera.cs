@@ -5,11 +5,11 @@ using UnityEngine;
 public class lookat_camera : MonoBehaviour
 {
 
-    private Disc_Movement frisbee;
+    private SimulatorUIhelper frisbee;
 
     void Start()
     {
-        frisbee = FindObjectOfType<Disc_Movement>();
+        frisbee = FindObjectOfType<SimulatorUIhelper>();
     }
 
     void Update()

@@ -89,6 +89,13 @@ public class Disc : MonoBehaviour {
     public double CD0 = 0.08;  //The drag coefficent at alpha = 0.
     public double CDA = 2.72;  //The drag coefficient dependent on alpha.
     public double ALPHA0 = -4;
+    // Rotational parameters
+    public double CRR = 0.014;
+    public double CRP = -0.0055;
+    public double CNR = -0.0000071;
+    public double CM0 = -0.08;
+    public double CMA = 0.43;
+    public double CMq = -0.005;
 
     void Start()
     {

@@ -6,11 +6,12 @@ public class DiscChange : MonoBehaviour
 {
     public GameObject[] discs;
     public discInfoNotifier din;
+    private Simulator dm;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        dm = GetComponent<Simulator>();
     }
 
     public void changeDisc(){
@@ -24,6 +25,7 @@ public class DiscChange : MonoBehaviour
         go.transform.parent = this.transform;
         go.transform.localPosition = discs[din.index].transform.localPosition;
         go.transform.localRotation = discs[din.index].transform.localRotation;
+        dm.UpdateDiscComponent();
       
     }
 }

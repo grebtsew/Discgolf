@@ -6,7 +6,7 @@ public class New_Follow_Camera : MonoBehaviour {
 
     private Vector3 offset;
     private Vector3 stand_offset;
-    private Disc_Movement frisbee;
+    private SimulatorUIhelper frisbee;
     public camera_mode mode = camera_mode.throw_mode;
 
     private float climbSpeed = 4;
@@ -16,19 +16,13 @@ public class New_Follow_Camera : MonoBehaviour {
 
     void Start()
     {
-        frisbee = FindObjectOfType<Disc_Movement>();
+        frisbee = FindObjectOfType<SimulatorUIhelper>();
         offset = transform.position - frisbee.transform.position;
-
-       
-
-
     }
-
 
 
     void Update()
     {
-    
                 transform.position = frisbee.transform.position + offset;
                 transform.LookAt(frisbee.transform);
               

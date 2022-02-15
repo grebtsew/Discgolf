@@ -7,30 +7,16 @@ public class updateHand : MonoBehaviour
 {
 
     private Text text;
-    private Disc_Movement disc;
+    private SimulatorUIhelper disc;
 
     void Start()
     {
         text = GetComponent<Text>();
-        disc = FindObjectOfType<Disc_Movement>();
+        disc = FindObjectOfType<SimulatorUIhelper>();
 
 
     }
 
 
 
-    // Update is called once per frame
-    void Update()
-    {
-        /*
-        if (disc.backhand)
-        {
-            text.text = "B";
-        }
-        else
-        {
-            text.text = "F";
-        }
-         */
-    }
 }

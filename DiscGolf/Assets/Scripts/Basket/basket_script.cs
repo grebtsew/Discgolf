@@ -5,12 +5,17 @@ using UnityEngine;
 public class basket_script : MonoBehaviour
 {
 
-    private Disc_Movement disc;
+
+    public float dampening = 100f;
+    
+    private SimulatorUIhelper disc;
+    private Rigidbody rigidBody;
 
     // Use this for initialization
     void Start()
     {
-        disc = FindObjectOfType<Disc_Movement>();
+        disc = FindObjectOfType<SimulatorUIhelper>();
+        rigidBody = disc.getRigidbody();
     }
 
 
@@ -18,7 +23,8 @@ public class basket_script : MonoBehaviour
     {
         if (other.tag == "disc")
         {
-            disc.rigidBody.velocity = Vector3.zero;
+            rigidBody.velocity = rigidBody.velocity/dampening;
+            // Also trigger audio here!
         }
     }
 
