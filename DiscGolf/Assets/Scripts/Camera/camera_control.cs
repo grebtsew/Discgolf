@@ -62,24 +62,23 @@ public class camera_control : MonoBehaviour
 
     private bool movingToCamera = false;
     private Transform cameraTarget;
+    public int initCameraIndex= 0;
 
     // Start is called before the first frame update
     void Start()
     {
         ui_listener =(UI_Listener)FindObjectsOfType<UI_Listener>()[0];
-        
   
         // Collect a list of all cameras in scene
         cam_list = Camera.allCameras;
         camera = gameObject.GetComponent<Camera>();
         camera_name = camera.name;
 
-
         // Initial update
         ui_listener.NotifyAll(camera_name, camera_mode.ToString());
+       
+        set_camera(initCameraIndex);
 
-        
-         set_next_camera();
     }
 
     private void handle_free_cam()

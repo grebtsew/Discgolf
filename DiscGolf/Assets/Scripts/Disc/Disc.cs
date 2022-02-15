@@ -2,6 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum difficulty
+{
+    EASY,
+    NEUTRAL,
+    ADVANCED
+}
+
+public enum disctype
+{
+    PA,
+    MD,
+    FD,
+    DD
+}
+
+
 public class Disc : MonoBehaviour {
 
      [Header("Disc Standard Attributes")]
@@ -24,7 +40,7 @@ public class Disc : MonoBehaviour {
      */
      public float GLIDE;
 
-    /* TURN +1 - -5
+    /* TURN +2 - -5
      * High Speed Turn is the tendency of a disc to turn over or bank to the right (for RHBH throws)
      * during the initial part of the flight. A disc with a +1 rating is most resistant to turning over,
      * while a -5 rating will turn the most. Discs rated -3 to -5 make good roller discs.
@@ -43,7 +59,7 @@ public class Disc : MonoBehaviour {
     [Header("Shape")]
     
         public float diameter = 0.21f; // in m
-        public float weight; // in kg
+        public float m; // in kg
 
         public float rim_thickness; // 
         public float rim_height; //
@@ -51,7 +67,12 @@ public class Disc : MonoBehaviour {
 
     [Header("Specifics")]
         public string name;
-        public string approved;
+        public bool approved;
+        public difficulty difficulty = difficulty.NEUTRAL;
+        public disctype disctype = disctype.MD;
+        public string plastic;
+        public string manufacturer;
+        //public Texture texture; 
 
     [Header("Constants")]
         public float resistant_constant; // 
@@ -61,13 +82,21 @@ public class Disc : MonoBehaviour {
       
         public float health = 100;
 
+    [Header("Advanced")]
+    public double AREA = 0.0568; //The area of a standard frisbee.
+    public double CL0 = 0.1; //The lift coefficient at alpha = 0.
+    public double CLA = 1.4; //The lift coefficient dependent on alpha.
+    public double CD0 = 0.08;  //The drag coefficent at alpha = 0.
+    public double CDA = 2.72;  //The drag coefficient dependent on alpha.
+    public double ALPHA0 = -4;
+
     void Start()
     {
         
         // Clamp values of flight parameters, max and min
         SPEED = Clamp(SPEED, 1, 15);
         GLIDE = Clamp(GLIDE, 1, 7);
-        TURN = Clamp(TURN, -5, 1); 
+        TURN = Clamp(TURN, -5, 2); 
         FADE = Clamp(FADE, 0, 5); 
     }
 
@@ -76,14 +105,7 @@ public class Disc : MonoBehaviour {
         return (value < min) ? min : (value > max) ? max : value;
     }
 
-    /* These are old factors from old implementation! */
-    public const float m = 0.175f; //The mass of a standard frisbee in kilograms.
-    public const double AREA = 0.0568; //The area of a standard frisbee.
-    public const double CL0 = 0.1; //The lift coefficient at alpha = 0.
-    public const double CLA = 1.4; //The lift coefficient dependent on alpha.
-    public const double CD0 = 0.08;  //The drag coefficent at alpha = 0.
-    public const double CDA = 2.72;  //The drag coefficient dependent on alpha.
-    public const double ALPHA0 = -4;
+
 
 
 }
