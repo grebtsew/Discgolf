@@ -25,9 +25,8 @@ public class canvas_controller : MonoBehaviour
         startpos = frisbee.transform.position;
         rigidBody = frisbee.getRigidbody();
         // set spinner start value
-        spin.value = frisbee.getSpin();
-        //power.value = frisbee.power;
-        speed.value = frisbee.getSpeed();
+        //spin.value = frisbee.getSpin();
+        //speed.value = frisbee.getSpeed();
     }
 
     /// publicly used methods

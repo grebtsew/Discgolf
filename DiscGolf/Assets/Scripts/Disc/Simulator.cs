@@ -47,8 +47,8 @@ public class Simulator : MonoBehaviour
     
 
     [Header("Throw Simulation Input")]
-    public float rotationalSpeed;
-    public float speed;
+    public float rotationalSpeed=50;
+    public float speed = 100;
     public Vector3 position;
     public Quaternion rotation;
     //TODO: player throw deviations
@@ -111,14 +111,14 @@ public class Simulator : MonoBehaviour
 
     private void Lift(){
         double cl = Disc.CL0 + Disc.CLA *alpha *Math.PI / 180; // lift constant
-        double lift = (RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cl /2 /  Disc.m)*Time.deltaTime*4 ; // TODO make this more realistic!
+        double lift = (RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cl /2 /  Disc.m)*Time.deltaTime*4 + Disc.GLIDE/9; // TODO make this more realistic!
         rigidBody.AddForce(transform.up.normalized * (float) lift , ForceMode.Acceleration );
     }
 
     private void Drag(){
         double cd = Disc.CD0 + Disc.CDA * Mathf.Pow((float)(alpha - (Disc.ALPHA0)*Math.PI / 180),2);
-        double drag = (RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cd)/2;
-        rigidBody.AddForce(-rigidBody.velocity.normalized * (float)drag, ForceMode.Acceleration );
+        double drag = (RHO * Math.Pow(rigidBody.velocity.magnitude, 2) * Disc.AREA * cd)/2 * (15/Disc.SPEED)/1.5f; // Gamification!
+        rigidBody.AddForce(-rigidBody.velocity.normalized * (float)drag, ForceMode.Acceleration ) ;
     }
     
     private void Gravity(){
@@ -126,12 +126,18 @@ public class Simulator : MonoBehaviour
     }
 
     private void Torque(){
-        roll = (Disc.CRR*rigidBody.angularVelocity.y+Disc.CRP*rigidBody.angularVelocity.x)* 1/2 * RHO * Math.Pow(rigidBody.velocity.magnitude,2) * Disc.AREA * Disc.diameter*0.01f*6;//TODO make this more realistic!
+         roll = (Disc.CRR*rigidBody.angularVelocity.y+Disc.CRP*rigidBody.angularVelocity.x)* 1/2 * RHO * Math.Pow(rigidBody.velocity.magnitude,2) * Disc.AREA * Disc.diameter*0.01f*6-Disc.TURN/2;//TODO make this more realistic!
+        roll-= Disc.FADE*3; // Gamification!
         spin = -(Disc.CNR*rigidBody.angularVelocity.y) * 1/2 * RHO * Math.Pow(rigidBody.velocity.magnitude,2) * Disc.AREA *Disc.diameter*0.01f;
         pitch = (Disc.CM0 + Disc.CMA*(Math.PI / 180*(alpha))  + Disc.CMq* rigidBody.angularVelocity.z) * 1/2 * RHO * Math.Pow(rigidBody.velocity.magnitude,2) * Disc.AREA * Disc.diameter*0.01f*6; //TODO make this more realistic!
-
-        Debug.Log(new Vector3((float)roll,(float)spin,(float)pitch));
-        rigidBody.AddTorque(Vector3.Cross(transform.up,rigidBody.velocity).normalized*(float)roll, ForceMode.Acceleration);
+        
+        if (!backhand){ // TODO: doesnt seem to work?
+            rigidBody.AddTorque(Vector3.Cross(transform.up,rigidBody.velocity).normalized*(float)-roll, ForceMode.Acceleration);
+         }else{
+            rigidBody.AddTorque(Vector3.Cross(transform.up,rigidBody.velocity).normalized*(float)roll, ForceMode.Acceleration);
+         }
+        //Debug.Log(new Vector3((float)roll,(float)spin,(float)pitch));
+       
         rigidBody.AddTorque(transform.up*(float)spin, ForceMode.Acceleration);
        rigidBody.AddTorque(rigidBody.velocity.normalized*(float)pitch, ForceMode.Acceleration);
     }
@@ -207,8 +213,12 @@ public class Simulator : MonoBehaviour
         rigidBody.useGravity = false;
         rigidBody.isKinematic = false;          // Add gravity to the disc
 
+        if (!backhand){
+            rigidBody.AddTorque(transform.up*-rotationalSpeed*0.01f, ForceMode.Impulse );
+        } else {
+            rigidBody.AddTorque(transform.up*rotationalSpeed*0.01f, ForceMode.Impulse );
+        }
         
-        rigidBody.AddTorque(transform.up*rotationalSpeed*0.01f, ForceMode.Impulse );
 
       //  rigidBody.AddForce(transform.right * force.x); // Add force on X to the disc
       //  rigidBody.AddForce(transform.up * force.y); // Add force on Y to the disc
@@ -225,6 +235,7 @@ public class Simulator : MonoBehaviour
     public void Throw()
     {
         // Perform actual throw
+        number_throws++;
         throw_delta_acceleration =throw_arm_length / animationSpeed;
         position = transform.position;
         transform.position -= transform.forward * throw_arm_length;

@@ -8,6 +8,33 @@ using System.Collections.Generic;
 
 public class SimulatorUIhelper : MonoBehaviour
 {
+    public Text distanceText;
+    public Text throwsText;
+
+    void Update(){
+        distanceText.text = Math.Round(Vector3.Distance(simulator.discInitialPosition, simulator.transform.position)).ToString();
+        throwsText.text = simulator.number_throws.ToString();
+
+        if (Input.GetKey(KeyCode.T) )
+        {
+            simulator.Throw();
+        }
+        if (Input.GetKey(KeyCode.N) )
+        {
+            Next();
+        }
+         if (Input.GetKey(KeyCode.B) )
+        {
+            Back();
+        }
+          if (Input.GetKey(KeyCode.R) )
+        {
+            Reset();
+        }
+       
+
+    }
+
    private Simulator simulator;
     void Start(){
         simulator = GetComponent<Simulator>();
@@ -95,7 +122,10 @@ public class SimulatorUIhelper : MonoBehaviour
         simulator.isThrown = false;
         simulator.throw_mode = true;
         simulator.transform.position = new Vector3(reset_pos.x, reset_pos.y + 2, reset_pos.z);
+        
+        if (simulator.basket){
         simulator.transform.LookAt(simulator.basket.transform);
+        }
 
         simulator.ResetDisc();
         NextThrow();

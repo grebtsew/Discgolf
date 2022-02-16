@@ -54,7 +54,17 @@ public class Carousel : MonoBehaviour
     void Update () {
 
         //UpdateCurrentIndexLable();
-        UpdateCarouselView();        
+        UpdateCarouselView();    
+
+        if (Input.GetKey(KeyCode.K) )
+        {
+            GoToPrev();
+        }
+        if (Input.GetKey(KeyCode.L) )
+        {
+            GoToNext();
+        }
+         
     }
     #endregion
 
