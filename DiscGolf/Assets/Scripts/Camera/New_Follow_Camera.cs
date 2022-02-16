@@ -23,7 +23,7 @@ public class New_Follow_Camera : MonoBehaviour {
 
     void Update()
     {
-                transform.position = frisbee.transform.position + offset;
+                transform.position = Vector3.MoveTowards(transform.position, frisbee.transform.position + offset, 20f);
                 transform.LookAt(frisbee.transform);
               
     }

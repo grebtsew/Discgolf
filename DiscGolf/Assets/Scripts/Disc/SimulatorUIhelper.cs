@@ -17,7 +17,7 @@ public class SimulatorUIhelper : MonoBehaviour
 
         if (Input.GetKey(KeyCode.T) )
         {
-            simulator.Throw();
+            NextThrow();
         }
         if (Input.GetKey(KeyCode.N) )
         {
@@ -117,8 +117,6 @@ public class SimulatorUIhelper : MonoBehaviour
 
     public void Next_reset(Vector3 reset_pos)
     {
-    
-
         simulator.isThrown = false;
         simulator.throw_mode = true;
         simulator.transform.position = new Vector3(reset_pos.x, reset_pos.y + 2, reset_pos.z);

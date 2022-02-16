@@ -35,8 +35,6 @@ public class Simulator : MonoBehaviour
     public float throw_arm_length = 5;
     private float throw_acceleration = 1.05f; // 5% acceleraton
    
-  
-    
     [Header("States")]
     // States
     public bool isThrown = false; // Is the disc in the air
@@ -191,6 +189,7 @@ public class Simulator : MonoBehaviour
 
     private void NextThrow()
     {
+         number_throws++;
         rigidBody.isKinematic = true; // Remove gravity to the disc
         rigidBody.useGravity = false;
     }
@@ -235,7 +234,7 @@ public class Simulator : MonoBehaviour
     public void Throw()
     {
         // Perform actual throw
-        number_throws++;
+       
         throw_delta_acceleration =throw_arm_length / animationSpeed;
         position = transform.position;
         transform.position -= transform.forward * throw_arm_length;
